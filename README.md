@@ -1,8 +1,3 @@
-## TODO:
-
-1. update all `CHANGEME` texts
-2. pin all deps to latest versions instead of `*`
-
 ## commands
 
 Install all dev tools
