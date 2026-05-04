@@ -18,7 +18,7 @@
 		"@biomejs/biome": "2.4.12",
 		"@tailwindcss/vite": "4.2.2",
 		"@types/node": "25.5.2",
-		"@typescript/native-preview": "7.0.0-dev.20260419.1",
+		"@typescript/native-preview": "7.0.0-dev.20260504.1",
 		"tailwindcss": "4.2.2",
 		"update-browserslist-db": "1.2.3",
 		"@astrojs/check": "0.9.8",
