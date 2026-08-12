@@ -27,7 +27,7 @@
 		"@astrojs/sitemap": "3.7.2",
 		"astro": "6.1.8",
 		"browserslist": "4.28.2",
-		"lightningcss": "1.32.0",
+		"lightningcss": "1.33.0",
 		"wrangler": "4.80.0"
 	},
 	"dependencies": {},
