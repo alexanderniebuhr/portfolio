@@ -24,6 +24,9 @@ export default defineConfig({
 				headSamplingRate: 1,
 				persist: true,
 			},
+			issues: {
+				enabled: true,
+			},
 		},
 		env: {
 			ASSETS: bindings.assets(),
