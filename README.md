@@ -7,16 +7,16 @@ mise i
 
 Install all deps if not done by `mise`
 ```shell
-pn i
+aube i
 ```
 
 Update browserlist
 ```shell
-pn update-browserslist-db latest
+aubx update-browserslist-db latest
 ```
 
 Deploy to cloudflare
 ```zsh
-pnpm run deploy
+aubr deploy
 ```
 
