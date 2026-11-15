@@ -13,7 +13,7 @@ export default defineConfig({
 			runtime: "cloudflare-binding",
 		},
 	}),
-	compressHTML: false,
+	compressHTML: "jsx",
 	session: false,
 	logger: logHandlers.json(),
 	experimental: {
