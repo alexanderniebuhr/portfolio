@@ -12,6 +12,7 @@ export default defineConfig({
 			"cache_option_preserves_cache_control",
 			"temporal",
 			"wasm_source_url_support",
+			"global_fetch_strictly_public",
 		],
 		entrypoint: "./src/worker.ts",
 		domains: ["alexanderniebuhr.me"],
