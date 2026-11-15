@@ -1,6 +1,6 @@
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
-import { defineConfig, logHandlers } from "astro/config";
+import { defineConfig, logHandlers, svgoOptimizer } from "astro/config";
 import browserslist from "browserslist";
 import { browserslistToTargets } from "lightningcss";
 
@@ -16,6 +16,7 @@ export default defineConfig({
 	experimental: {
 		clientPrerender: true,
 		contentIntellisense: true,
+		svgOptimizer: svgoOptimizer(),
 	},
 	prefetch: {
 		defaultStrategy: "hover",
