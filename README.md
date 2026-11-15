@@ -12,10 +12,10 @@ Install all deps if not done by `mise`
 aube i
 ```
 
-Update browserlist
+Update the browserslist data (`caniuse-lite` and `baseline-browser-mapping`)
 
 ```shell
-aube update browserslist
+aube update caniuse-lite@latest baseline-browser-mapping@latest
 ```
 
 Generate Cloudflare types (written to `.cloudflare/types/`)
