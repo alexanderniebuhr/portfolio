@@ -51,3 +51,13 @@ hk fix --all
 ```
 
 Skip the hooks once with `HK=0`, e.g. `HK=0 git commit`
+
+## ci
+
+`.github/workflows/ci.yml` lints (`hk check --all`), type-checks and builds every pull request and push to `main`, then deploys pushes to `main` with `cf deploy --prebuilt`.
+
+Required repository secret:
+
+- `CLOUDFLARE_API_TOKEN`: an API token for the account in `cloudflare.config.ts` that can deploy the Worker to its custom domain (for example the "Edit Cloudflare Workers" template) and use Cloudflare Images. The build needs it too, because the `IMAGES` binding connects to Cloudflare remotely.
+
+Pull requests from forks get no secrets, so they build with `CLOUDFLARE_VITE_FORCE_LOCAL=true`, which simulates the `IMAGES` binding locally.
