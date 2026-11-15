@@ -23,8 +23,8 @@ export default defineConfig({
 				previews: true,
 			},
 		],
-		workersDev: true,
-		previewUrls: true,
+		workersDev: false,
+		previewUrls: false,
 		placement: {
 			mode: "smart",
 		},
