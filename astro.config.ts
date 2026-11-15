@@ -1,6 +1,6 @@
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
-import { defineConfig } from "astro/config";
+import { defineConfig, logHandlers } from "astro/config";
 import browserslist from "browserslist";
 import { browserslistToTargets } from "lightningcss";
 
@@ -12,6 +12,7 @@ export default defineConfig({
 	}),
 	compressHTML: false,
 	session: false,
+	logger: logHandlers.json(),
 	experimental: {
 		clientPrerender: true,
 		contentIntellisense: true,
