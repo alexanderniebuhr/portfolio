@@ -4,8 +4,7 @@ export default defineConfig({
 	accountId: "1dc7f5dfd6f1830ea5b903d051c6d624",
 	worker: {
 		name: "alexanderniebuhr-portfolio",
-		compatibilityDate: "2026-04-04",
-		compatibilityFlags: ["nodejs_compat"],
+		compatibilityDate: "2026-11-08",
 		entrypoint: "./src/worker.ts",
 		domains: ["alexanderniebuhr.me"],
 		workersDev: true,
