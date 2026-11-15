@@ -43,6 +43,9 @@ export default defineConfig({
 						"unreleased versions",
 					]),
 				),
+				drafts: {
+					customMedia: true,
+				},
 			},
 		},
 		build: {
