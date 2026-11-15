@@ -15,7 +15,14 @@ export default defineConfig({
 			"global_fetch_strictly_public",
 		],
 		entrypoint: "./src/worker.ts",
-		domains: ["alexanderniebuhr.me"],
+		domains: [
+			"alexanderniebuhr.me",
+			{
+				hostname: "preview.alexanderniebuhr.me",
+				production: false,
+				previews: true,
+			},
+		],
 		workersDev: true,
 		previewUrls: true,
 		placement: {

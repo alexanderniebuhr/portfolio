@@ -36,6 +36,14 @@ Deploy to cloudflare (sign in once with `aube exec -- cf auth login`)
 aubr deploy
 ```
 
+## previews
+
+`cloudflare.config.ts` serves production on `alexanderniebuhr.me` and Previews on subdomains of `preview.alexanderniebuhr.me`, so a Preview named `<preview-name>` is at `https://<preview-name>.preview.alexanderniebuhr.me`. Cloudflare creates the wildcard DNS record and certificate for `*.preview.alexanderniebuhr.me`; the certificate can take a while after the first Preview.
+
+Domain settings only take effect on a production deploy (`cf deploy`); Preview uploads reuse whatever hosting the deployed Worker already has.
+
+`*.preview.alexanderniebuhr.me` is protected with Cloudflare Access, configured in the Zero Trust dashboard rather than in this repository. Unlike `workers.dev` Preview URLs, custom domain Preview URLs do not get an `X-Robots-Tag: noindex` header automatically.
+
 ## git hooks
 
 [hk](https://hk.jdx.dev) runs the hooks configured in `hk.pkl`. `mise i` installs them with `hk install --mise`; run that command yourself if you installed the tools another way.
