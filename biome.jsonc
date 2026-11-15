@@ -50,9 +50,6 @@
 			"includes": ["**/*.astro"],
 			"linter": {
 				"rules": {
-					"correctness": {
-						"noUnusedImports": "off"
-					},
 					"suspicious": {
 						"noReactSpecificProps": "error"
 					}
