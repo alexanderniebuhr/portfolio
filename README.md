@@ -24,6 +24,12 @@ Generate Cloudflare types (written to `.cloudflare/types/`)
 aubr types
 ```
 
+Type-check with TypeScript 7.1 (`.astro` files via `@astrojs/ts-content-mapper`)
+
+```shell
+aubr check
+```
+
 Deploy to cloudflare (sign in once with `aube exec -- cf auth login`)
 
 ```zsh
