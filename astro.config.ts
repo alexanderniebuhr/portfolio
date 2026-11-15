@@ -11,6 +11,7 @@ export default defineConfig({
 		imageService: { build: "compile", runtime: "cloudflare-binding" },
 	}),
 	compressHTML: false,
+	session: false,
 	experimental: {
 		clientPrerender: true,
 		contentIntellisense: true,

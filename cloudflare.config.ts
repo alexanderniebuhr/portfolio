@@ -33,9 +33,6 @@ export default defineConfig({
 				},
 			}),
 			CF_VERSION_METADATA: bindings.versionMetadata(),
-			SESSION: bindings.kv({
-				id: "f18e5a9143254147880a0b22d0bbd8e7",
-			}),
 		},
 	},
 });
