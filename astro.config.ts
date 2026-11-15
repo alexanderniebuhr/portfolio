@@ -1,6 +1,5 @@
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
-import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import browserslist from "browserslist";
 import { browserslistToTargets } from "lightningcss";
@@ -52,6 +51,5 @@ export default defineConfig({
 			minify: false,
 			cssMinify: false,
 		},
-		plugins: [tailwindcss()],
 	},
 });
