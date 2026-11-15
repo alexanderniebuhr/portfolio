@@ -23,6 +23,16 @@
 			"whitespaceSensitivity": "strict"
 		}
 	},
+	"markdown": {
+		"formatter": {
+			"enabled": true
+		}
+	},
+	"yaml": {
+		"formatter": {
+			"enabled": true
+		}
+	},
 	"assist": {
 		"enabled": true,
 		"actions": {
