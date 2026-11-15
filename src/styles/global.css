@@ -1,1 +1,53 @@
-@import "tailwindcss";
+@layer reset, base;
+
+:root {
+	color-scheme: light dark;
+
+	--color-surface: light-dark(#fafaf9, #0c0a09);
+	--color-text: light-dark(#1c1917, #f5f5f4);
+	--font-sans:
+		ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@layer reset {
+	*,
+	::before,
+	::after {
+		box-sizing: border-box;
+		margin: 0;
+	}
+
+	html {
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%;
+		text-size-adjust: 100%;
+		tab-size: 4;
+	}
+
+	button,
+	input,
+	select,
+	textarea {
+		font: inherit;
+	}
+
+	img,
+	svg,
+	video {
+		display: block;
+	}
+}
+
+@layer base {
+	body {
+		display: flex;
+		flex-direction: column;
+		min-height: 100dvh;
+		background-color: var(--color-surface);
+		color: var(--color-text);
+		font-family: var(--font-sans);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+}
