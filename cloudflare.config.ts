@@ -10,6 +10,7 @@ export default defineConfig({
 			"enable_request_signal",
 			"pipe_to_backward_propagation",
 			"cache_option_preserves_cache_control",
+			"temporal",
 		],
 		entrypoint: "./src/worker.ts",
 		domains: ["alexanderniebuhr.me"],
