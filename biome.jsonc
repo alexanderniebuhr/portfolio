@@ -14,6 +14,9 @@
 	},
 	"html": {
 		"experimentalFullSupportEnabled": true,
+		"linter": {
+			"enabled": true
+		},
 		"formatter": {
 			"enabled": true,
 			"indentScriptAndStyle": true,
@@ -38,7 +41,10 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"preset": "recommended"
+			"preset": "recommended",
+			"a11y": {
+				"preset": "all"
+			}
 		},
 		"domains": {
 			"project": "recommended",
