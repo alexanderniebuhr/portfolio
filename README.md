@@ -66,8 +66,10 @@ Skip the hooks once with `HK=0`, e.g. `HK=0 git commit`
 
 `.github/workflows/ci.yml` lints (`hk check --all`), type-checks and builds every pull request and push to `main`, then deploys pushes to `main` with `cf deploy --prebuilt`.
 
+Pull requests from this repository also get a Preview named `pr-<number>`: CI builds it with `CLOUDFLARE_PREVIEW_BUILD=true` (`cf previews deploy --prebuilt` only accepts a Preview build), deploys it with `cf previews deploy`, and keeps one comment on the pull request up to date with its URL. Until a Preview host is live (see [previews](#previews)), the comment says the Preview has no URL yet. Closing the pull request deletes the Preview with `cf previews delete`. Only the commenting job gets `pull-requests: write`.
+
 Required repository secret:
 
-- `CLOUDFLARE_API_TOKEN`: an API token for the account in `cloudflare.config.ts` that can deploy the Worker to its custom domain (for example the "Edit Cloudflare Workers" template) and use Cloudflare Images. The build needs it too, because the `IMAGES` binding connects to Cloudflare remotely.
+- `CLOUDFLARE_API_TOKEN`: an API token for the account in `cloudflare.config.ts` that can deploy the Worker and its Previews to its custom domains (for example the "Edit Cloudflare Workers" template) and use Cloudflare Images. The build needs it too, because the `IMAGES` binding connects to Cloudflare remotely.
 
-Pull requests from forks get no secrets, so they build with `CLOUDFLARE_VITE_FORCE_LOCAL=true`, which simulates the `IMAGES` binding locally.
+Pull requests from forks get no secrets, so they get no Preview and build with `CLOUDFLARE_VITE_FORCE_LOCAL=true`, which simulates the `IMAGES` binding locally.

@@ -2,6 +2,7 @@ name: CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, closed]
   push:
     branches: [main]
 
@@ -18,10 +19,15 @@ env:
 jobs:
   ci:
     name: Check, build and deploy
+    if: github.event.action != 'closed'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       HAS_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+      # Forks get no secrets, so only pull requests from this repository deploy a preview.
+      DEPLOY_PREVIEW: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+    outputs:
+      preview: ${{ steps.preview.outputs.result }}
     steps:
       - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -68,3 +74,94 @@ jobs:
         run: aube exec --no-install -- cf deploy --prebuilt --mode production
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      # `cf previews deploy --prebuilt` only accepts a Build Output created by a Preview build.
+      - name: Build preview
+        if: env.DEPLOY_PREVIEW == 'true' && env.HAS_CLOUDFLARE_API_TOKEN == 'true'
+        run: aubr --no-install build
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_PREVIEW_BUILD: "true"
+
+      - name: Deploy preview
+        id: preview
+        if: env.DEPLOY_PREVIEW == 'true' && env.HAS_CLOUDFLARE_API_TOKEN == 'true'
+        run: |
+          aube exec --no-install -- cf previews deploy --prebuilt --mode production --preview-name "pr-${PR_NUMBER}" > "${RUNNER_TEMP}/preview.json"
+          jq . "${RUNNER_TEMP}/preview.json"
+          echo "result=$(jq -c . "${RUNNER_TEMP}/preview.json")" >> "${GITHUB_OUTPUT}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+  preview-comment:
+    name: Comment preview URL
+    needs: ci
+    if: needs.ci.outputs.preview != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Create or update the preview comment
+        run: |
+          marker="<!-- cf-preview -->"
+          urls=$(jq -r '(.preview_urls // [])[] | if type == "string" then . else (.url // empty) end' <<< "${PREVIEW}")
+          deployment_urls=$(jq -r '(.deployment_urls // [])[] | if type == "string" then . else (.url // empty) end' <<< "${PREVIEW}")
+          deployment_id=$(jq -r '.deployment_id // "unknown"' <<< "${PREVIEW}")
+          {
+            echo "${marker}"
+            echo "### Preview \`pr-${PR_NUMBER}\`"
+            echo
+            if [ -n "${urls}" ]; then
+              while IFS= read -r url; do echo "- ${url}"; done <<< "${urls}"
+              if [ -n "${deployment_urls}" ]; then
+                echo
+                echo "This deployment:"
+                echo
+                while IFS= read -r url; do echo "- ${url}"; done <<< "${deployment_urls}"
+              fi
+            else
+              echo "Deployed, but this preview has no URL yet. The \`workers.dev\` preview URLs are disabled, and the \`preview.alexanderniebuhr.me\` domain only applies once \`cloudflare.config.ts\` with that domain has been deployed to production."
+            fi
+            echo
+            echo "Commit ${HEAD_SHA}, deployment \`${deployment_id}\`"
+          } > "${RUNNER_TEMP}/comment.md"
+          comment_id=$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"${marker}\"))) | .id" | head -n 1)
+          if [ -n "${comment_id}" ]; then
+            gh api --method PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}" -F "body=@${RUNNER_TEMP}/comment.md" > /dev/null
+          else
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" -F "body=@${RUNNER_TEMP}/comment.md" > /dev/null
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIEW: ${{ needs.ci.outputs.preview }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+  preview-delete:
+    name: Delete preview
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install tools from mise.toml
+        uses: jdx/mise-action@d5574b52816a478f9d4e6529a3f6ff17a8a36785 # v5.2.8
+        with:
+          version: 2026.11.4
+          experimental: true
+
+      - name: Install dependencies
+        run: aube install --frozen-lockfile
+
+      - name: Delete preview
+        run: aube exec --no-install -- cf previews delete "pr-${PR_NUMBER}" --worker alexanderniebuhr-portfolio --force
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
