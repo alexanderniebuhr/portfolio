@@ -8,7 +8,10 @@ export default defineConfig({
 	site: "https://alexanderniebuhr.me",
 	output: "server",
 	adapter: cloudflare({
-		imageService: { build: "compile", runtime: "cloudflare-binding" },
+		imageService: {
+			build: "cloudflare-binding",
+			runtime: "cloudflare-binding",
+		},
 	}),
 	compressHTML: false,
 	session: false,
