@@ -142,26 +142,48 @@ jobs:
 
   preview-delete:
     name: Delete preview
+    # Forks get no secrets and never get a preview, so there is nothing to delete.
     if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    env:
+      HAS_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     steps:
+      - name: Skip without CLOUDFLARE_API_TOKEN
+        if: env.HAS_CLOUDFLARE_API_TOKEN != 'true'
+        run: echo "::notice title=Preview not deleted::CLOUDFLARE_API_TOKEN is unavailable, so no preview was deployed for this pull request."
+
       - name: Check out
+        if: env.HAS_CLOUDFLARE_API_TOKEN == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Install tools from mise.toml
+        if: env.HAS_CLOUDFLARE_API_TOKEN == 'true'
         uses: jdx/mise-action@d5574b52816a478f9d4e6529a3f6ff17a8a36785 # v5.2.8
         with:
           version: 2026.11.4
           experimental: true
 
       - name: Install dependencies
+        if: env.HAS_CLOUDFLARE_API_TOKEN == 'true'
         run: aube install --frozen-lockfile
 
+      # `cf previews` has no list or get command, and every API error exits 1, so a missing
+      # preview is told apart by its API error code 10025 ("Preview not found").
       - name: Delete preview
-        run: aube exec --no-install -- cf previews delete "pr-${PR_NUMBER}" --worker alexanderniebuhr-portfolio --force
+        if: env.HAS_CLOUDFLARE_API_TOKEN == 'true'
+        run: |
+          if aube exec --no-install -- cf previews delete "pr-${PR_NUMBER}" --worker alexanderniebuhr-portfolio --force 2> "${RUNNER_TEMP}/delete.err"; then
+            echo "Deleted preview pr-${PR_NUMBER}."
+          elif grep -qF '[10025]' "${RUNNER_TEMP}/delete.err"; then
+            cat "${RUNNER_TEMP}/delete.err" >&2
+            echo "::notice title=Preview not found::Preview pr-${PR_NUMBER} does not exist, so there is nothing to delete."
+          else
+            cat "${RUNNER_TEMP}/delete.err" >&2
+            exit 1
+          fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
