@@ -20,6 +20,7 @@ export default defineConfig({
 		clientPrerender: true,
 		contentIntellisense: true,
 		svgOptimizer: svgoOptimizer(),
+		incrementalBuild: true,
 	},
 	prefetch: {
 		defaultStrategy: "hover",
