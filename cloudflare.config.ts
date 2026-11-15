@@ -9,6 +9,7 @@ export default defineConfig({
 			"new_module_registry",
 			"enable_request_signal",
 			"pipe_to_backward_propagation",
+			"cache_option_preserves_cache_control",
 		],
 		entrypoint: "./src/worker.ts",
 		domains: ["alexanderniebuhr.me"],
