@@ -9,9 +9,15 @@ on:
 permissions:
   contents: read
 
+# Pull request runs are grouped by pull request number, because `github.ref` of a merged
+# pull request's `closed` run is the base branch, which would put it in the group of the
+# production deploy on main. A running production deploy is never cancelled, the next one
+# waits for it (a waiting one is replaced by a newer push, so the latest main still deploys).
+# A new pull request run cancels the older one, except the `closed` run: it waits for an
+# in-progress preview deploy to finish, so the preview it deletes is not recreated.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
 
 env:
   CF_SEND_TELEMETRY: "false"
