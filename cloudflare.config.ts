@@ -35,7 +35,6 @@ export default defineConfig({
 					remote: true,
 				},
 			}),
-			CF_VERSION_METADATA: bindings.versionMetadata(),
 		},
 	},
 });
