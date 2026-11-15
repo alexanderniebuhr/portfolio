@@ -15,7 +15,7 @@ aube i
 Update browserlist
 
 ```shell
-aubx update-browserslist-db latest
+aube update browserslist
 ```
 
 Deploy to cloudflare
