@@ -5,7 +5,11 @@ export default defineConfig({
 	worker: {
 		name: "alexanderniebuhr-portfolio",
 		compatibilityDate: "2026-11-08",
-		compatibilityFlags: ["new_module_registry", "enable_request_signal"],
+		compatibilityFlags: [
+			"new_module_registry",
+			"enable_request_signal",
+			"pipe_to_backward_propagation",
+		],
 		entrypoint: "./src/worker.ts",
 		domains: ["alexanderniebuhr.me"],
 		workersDev: true,
