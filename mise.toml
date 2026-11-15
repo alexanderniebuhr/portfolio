@@ -1,8 +1,13 @@
 [tools]
 aube = "2.10.0"
+gitleaks = "8.30.1"
+hk = "2.12.0"
+
+[env]
+_.path = ["node_modules/.bin"]
 
 [hooks]
-postinstall = "aube install"
+postinstall = ["aube install", "hk install --mise"]
 
 [settings]
 experimental = true

@@ -1,0 +1,38 @@
+amends "package://github.com/jdx/hk/releases/download/v2.12.0/hk@2.12.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.12.0/hk@2.12.0#/Builtins.pkl"
+
+steps {
+  ["biome"] = (Builtins.biome) {
+    glob = List(
+      "**/*.ts",
+      "**/*.mts",
+      "**/*.js",
+      "**/*.mjs",
+      "**/*.json",
+      "**/*.jsonc",
+      "**/*.css",
+      "**/*.astro",
+      "**/*.md",
+      "**/*.yaml",
+      "**/*.yml",
+    )
+    exclude = List("aube-lock.yaml")
+  }
+}
+
+hooks {
+  ["pre-commit"] {
+    steps {
+      ["gitleaks"] = (Builtins.gitleaks) {
+        scan = "staged"
+      }
+    }
+  }
+  ["pre-push"] {
+    steps {
+      ["typecheck"] {
+        check = "aubr check"
+      }
+    }
+  }
+}
