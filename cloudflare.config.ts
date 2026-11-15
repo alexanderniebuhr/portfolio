@@ -9,6 +9,9 @@ export default defineConfig({
 		domains: ["alexanderniebuhr.me"],
 		workersDev: true,
 		previewUrls: true,
+		placement: {
+			mode: "smart",
+		},
 		limits: {
 			cpuMs: 60000,
 		},
