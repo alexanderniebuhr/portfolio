@@ -11,6 +11,7 @@ export default defineConfig({
 			"pipe_to_backward_propagation",
 			"cache_option_preserves_cache_control",
 			"temporal",
+			"wasm_source_url_support",
 		],
 		entrypoint: "./src/worker.ts",
 		domains: ["alexanderniebuhr.me"],
