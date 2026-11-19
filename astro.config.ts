@@ -12,6 +12,7 @@ export default defineConfig({
 			build: "cloudflare-binding",
 			runtime: "cloudflare-binding",
 		},
+		remoteBindings: process.env.CLOUDFLARE_VITE_FORCE_LOCAL !== "true",
 	}),
 	compressHTML: "jsx",
 	session: false,

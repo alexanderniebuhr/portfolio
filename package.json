@@ -14,15 +14,15 @@
 		"deploy": "cf deploy"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.6.7",
+		"@biomejs/biome": "2.6.8",
 		"@types/node": "26.6.6",
 		"typescript": "7.1.0-beta",
 		"@astrojs/ts-content-mapper": "0.2.0",
-		"@astrojs/cloudflare": "15.0.0-beta.5",
-		"@astrojs/sitemap": "3.7.5",
-		"astro": "7.4.12",
-		"browserslist": "4.29.5",
-		"cf": "1.0.0-beta.32",
+		"@astrojs/cloudflare": "15.0.0-beta.6",
+		"@astrojs/sitemap": "3.7.6",
+		"astro": "7.4.13",
+		"browserslist": "4.29.6",
+		"cf": "1.0.0-rc.2",
 		"lightningcss": "1.33.0"
 	},
 	"dependencies": {},
