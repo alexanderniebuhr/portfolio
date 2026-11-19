@@ -1,0 +1,3 @@
+# False positives on WebCrypto algorithm identifier 'MLKEM768-X25519' in vendored skill docs
+.agents/skills/modern-web-guidance/guides/security/client-side-encryption.md:generic-api-key:187
+.agents/skills/modern-web-guidance/guides/security/client-side-encryption.md:generic-api-key:201
