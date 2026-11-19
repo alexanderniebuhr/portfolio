@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+	as?: HTMLTag;
+	threshold?: string;
+	space?: string;
+}
+
+const {
+	as = "div",
+	threshold,
+	space,
+	class: className,
+	style,
+	...attrs
+} = Astro.props;
+
+const Tag = as;
+const inlineStyle = [
+	threshold ? `--threshold: ${threshold}` : null,
+	space ? `--space: ${space}` : null,
+	style,
+]
+	.filter(Boolean)
+	.join("; ");
+---
+
+<Tag
+	class:list={["switcher", className]}
+	style={inlineStyle || undefined}
+	{...attrs}
+>
+	<slot />
+</Tag>

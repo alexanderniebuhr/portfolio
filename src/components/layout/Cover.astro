@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+	as?: HTMLTag;
+	minBlockSize?: string;
+	space?: string;
+}
+
+const {
+	as = "div",
+	minBlockSize,
+	space,
+	class: className,
+	style,
+	...attrs
+} = Astro.props;
+
+const Tag = as;
+const inlineStyle = [
+	minBlockSize ? `--min-block-size: ${minBlockSize}` : null,
+	space ? `--space: ${space}` : null,
+	style,
+]
+	.filter(Boolean)
+	.join("; ");
+---
+
+<Tag
+	class:list={["cover", className]}
+	style={inlineStyle || undefined}
+	{...attrs}
+>
+	<slot />
+</Tag>

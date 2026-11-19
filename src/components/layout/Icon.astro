@@ -1,0 +1,47 @@
+---
+interface Props {
+	name:
+		| "arrow-right"
+		| "arrow-up-right"
+		| "check"
+		| "chevron-down"
+		| "copy"
+		| "printer";
+	label?: string;
+	class?: string;
+}
+
+const { name, label, class: className } = Astro.props;
+const isDecorative = !label;
+---
+
+<svg
+	class:list={["icon", className]}
+	viewBox="0 0 16 16"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="1.5"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+	aria-hidden={isDecorative ? "true" : undefined}
+	role={isDecorative ? undefined : "img"}
+	aria-label={label}
+>
+	{name === "arrow-right" && <path d="M3 8h10M9 4l4 4-4 4" />}
+	{name === "arrow-up-right" && <path d="M5 11L11 5M6 5h5v5" />}
+	{name === "chevron-down" && <path d="M4 6l4 4 4-4" />}
+	{name === "check" && <path d="M3 8.5l3.25 3.25L13 5" />}
+	{name === "copy" && (
+		<>
+			<rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+			<path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2" />
+		</>
+	)}
+	{name === "printer" && (
+		<>
+			<path d="M4.5 6V2.5h7V6" />
+			<rect x="2" y="6" width="12" height="5.5" rx="1" />
+			<path d="M4.5 9.5h7v4h-7z" />
+		</>
+	)}
+</svg>

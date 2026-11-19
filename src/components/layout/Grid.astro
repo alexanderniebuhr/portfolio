@@ -1,0 +1,40 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+	as?: HTMLTag;
+	min?: string;
+	space?: string;
+	listSemantics?: boolean;
+}
+
+const {
+	as = "div",
+	min,
+	space,
+	listSemantics = false,
+	class: className,
+	style,
+	role,
+	...attrs
+} = Astro.props;
+
+const Tag = as;
+const resolvedRole = role ?? (listSemantics ? "list" : undefined);
+const inlineStyle = [
+	min ? `--min: ${min}` : null,
+	space ? `--space: ${space}` : null,
+	style,
+]
+	.filter(Boolean)
+	.join("; ");
+---
+
+<Tag
+	class:list={["grid", className]}
+	role={resolvedRole}
+	style={inlineStyle || undefined}
+	{...attrs}
+>
+	<slot />
+</Tag>

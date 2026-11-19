@@ -1,0 +1,37 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+	as?: HTMLTag;
+	space?: string;
+	recursive?: boolean;
+	listSemantics?: boolean;
+}
+
+const {
+	as = "div",
+	space,
+	recursive = false,
+	listSemantics = false,
+	class: className,
+	style,
+	role,
+	...attrs
+} = Astro.props;
+
+const Tag = as;
+const resolvedRole = role ?? (listSemantics ? "list" : undefined);
+const inlineStyle = [space ? `--space: ${space}` : null, style]
+	.filter(Boolean)
+	.join("; ");
+---
+
+<Tag
+	class:list={["stack", className]}
+	data-recursive={recursive ? "" : undefined}
+	role={resolvedRole}
+	style={inlineStyle || undefined}
+	{...attrs}
+>
+	<slot />
+</Tag>

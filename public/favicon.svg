@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+	<title>Alexander Niebuhr</title>
+	<style>
+		rect {
+			fill: #1a1917;
+		}
+		text {
+			fill: #fafaf8;
+		}
+		@media (prefers-color-scheme: dark) {
+			rect {
+				fill: #f4f3ef;
+			}
+			text {
+				fill: #0f0e0d;
+			}
+		}
+	</style>
+	<rect width="64" height="64" rx="14" />
+	<text
+		x="32"
+		y="42"
+		text-anchor="middle"
+		font-family="ui-sans-serif, system-ui, -apple-system, sans-serif"
+		font-size="28"
+		font-weight="600"
+		letter-spacing="-0.04em"
+		>AN</text
+	>
+</svg>

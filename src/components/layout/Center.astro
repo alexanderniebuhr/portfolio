@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+	as?: HTMLTag;
+	max?: string;
+	gutter?: string;
+	intrinsic?: boolean;
+}
+
+const {
+	as = "div",
+	max,
+	gutter,
+	intrinsic = false,
+	class: className,
+	style,
+	...attrs
+} = Astro.props;
+
+const Tag = as;
+const inlineStyle = [
+	max ? `--max-inline-size: ${max}` : null,
+	gutter ? `--gutter: ${gutter}` : null,
+	style,
+]
+	.filter(Boolean)
+	.join("; ");
+---
+
+<Tag
+	class:list={["center", className]}
+	data-intrinsic={intrinsic ? "" : undefined}
+	style={inlineStyle || undefined}
+	{...attrs}
+>
+	<slot />
+</Tag>

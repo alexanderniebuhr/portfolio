@@ -1,0 +1,44 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+	as?: HTMLTag;
+	side?: "left" | "right";
+	sideWidth?: string;
+	contentMin?: string;
+	space?: string;
+	align?: string;
+}
+
+const {
+	as = "div",
+	side = "left",
+	sideWidth,
+	contentMin,
+	space,
+	align,
+	class: className,
+	style,
+	...attrs
+} = Astro.props;
+
+const Tag = as;
+const inlineStyle = [
+	sideWidth ? `--side-width: ${sideWidth}` : null,
+	contentMin ? `--content-min: ${contentMin}` : null,
+	space ? `--space: ${space}` : null,
+	align ? `--align: ${align}` : null,
+	style,
+]
+	.filter(Boolean)
+	.join("; ");
+---
+
+<Tag
+	class:list={["with-sidebar", className]}
+	data-side={side === "right" ? "right" : undefined}
+	style={inlineStyle || undefined}
+	{...attrs}
+>
+	<slot />
+</Tag>
