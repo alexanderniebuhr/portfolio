@@ -6,6 +6,7 @@ interface Props {
 		| "check"
 		| "chevron-down"
 		| "copy"
+		| "download"
 		| "printer";
 	label?: string;
 	class?: string;
@@ -36,6 +37,9 @@ const isDecorative = !label;
 			<rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
 			<path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2" />
 		</>
+	)}
+	{name === "download" && (
+		<path d="M8 2.5v8M4.75 7.5 8 10.75l3.25-3.25M2.5 13h11" />
 	)}
 	{name === "printer" && (
 		<>

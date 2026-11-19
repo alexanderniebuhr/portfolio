@@ -91,14 +91,24 @@ const copyOptions = [
 		</div>
 
 		{showPrint && (
-			<button
-				type="button"
-				class="action-secondary with-icon"
-				data-print-button
-			>
-				<Icon name="printer" />
-				<span>Print / Save PDF</span>
-			</button>
+			<>
+				<a
+					href="/cv.pdf?download=1"
+					download="alexander-niebuhr-cv.pdf"
+					class="action-secondary with-icon"
+				>
+					<Icon name="download" />
+					<span>Download PDF</span>
+				</a>
+				<button
+					type="button"
+					class="action-secondary with-icon"
+					data-print-pdf="/cv.pdf"
+				>
+					<Icon name="printer" />
+					<span>Print PDF</span>
+				</button>
+			</>
 		)}
 	</Cluster>
 
@@ -270,10 +280,32 @@ const copyOptions = [
 
 		document.addEventListener("click", (event) => {
 			if (!(event.target instanceof Element)) return;
-			const printBtn = event.target.closest("[data-print-button]");
-			if (printBtn) {
-				window.print();
-			}
+			const printBtn = event.target.closest<HTMLElement>("[data-print-pdf]");
+			if (!printBtn) return;
+
+			const pdfUrl = printBtn.dataset.printPdf ?? "/cv.pdf";
+			const existing = document.querySelector<HTMLIFrameElement>(
+				"iframe[data-cv-print-frame]",
+			);
+			existing?.remove();
+
+			const frame = document.createElement("iframe");
+			frame.dataset.cvPrintFrame = "";
+			frame.title = "Alexander Niebuhr Curriculum Vitae PDF";
+			frame.setAttribute("aria-hidden", "true");
+			frame.tabIndex = -1;
+			frame.style.cssText =
+				"position:fixed;inline-size:0;block-size:0;border:0;visibility:hidden";
+			frame.addEventListener("load", () => {
+				try {
+					frame.contentWindow?.focus();
+					frame.contentWindow?.print();
+				} catch {
+					window.location.href = pdfUrl;
+				}
+			});
+			frame.src = pdfUrl;
+			document.body.append(frame);
 		});
 	}
 </script>
