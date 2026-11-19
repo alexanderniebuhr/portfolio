@@ -4,12 +4,8 @@ export default defineConfig({
 	accountId: "1dc7f5dfd6f1830ea5b903d051c6d624",
 	worker: {
 		name: "alexanderniebuhr-portfolio",
-		compatibilityDate: "2026-11-08",
+		compatibilityDate: "2026-11-17",
 		compatibilityFlags: [
-			"new_module_registry",
-			"enable_request_signal",
-			"pipe_to_backward_propagation",
-			"cache_option_preserves_cache_control",
 			"temporal",
 			"wasm_source_url_support",
 			"global_fetch_strictly_public",
