@@ -46,6 +46,9 @@ jobs:
           version: 2026.11.10
           experimental: true
 
+      - name: Verify mise.lock
+        run: mise lock --check
+
       - name: Install dependencies
         run: |
           aube install --frozen-lockfile
