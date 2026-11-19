@@ -41,10 +41,6 @@ hooks {
       ["gitleaks"] = (Builtins.gitleaks) {
         scan = "staged"
       }
-    }
-  }
-  ["pre-push"] {
-    steps {
       ["typecheck"] {
         check = "aubr check"
         cache = true

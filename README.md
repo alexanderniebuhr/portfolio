@@ -50,8 +50,7 @@ The `workers.dev` URLs are disabled (`workersDev: false`, `previewUrls: false`),
 
 [hk](https://hk.jdx.dev) runs the hooks configured in `hk.pkl`. `mise i` installs them with `hk install --mise`; run that command yourself if you installed the tools another way.
 
-- `pre-commit`: Biome fixes the staged files and stages the fixes; gitleaks scans the staged changes for secrets
-- `pre-push`: `aubr check`
+- `pre-commit`: Biome fixes the staged files and stages the fixes; gitleaks scans the staged changes for secrets; `aubr check` type-checks the project
 
 Check or fix all files without committing
 
