@@ -54,6 +54,15 @@
 			"preset": "recommended",
 			"a11y": {
 				"preset": "all"
+			},
+			"nursery": {
+				"noLateCurrentTargetAccess": "error",
+				"noMisusedSpread": "error",
+				"noTripleSlashReference": "error",
+				"noYamlEmptyMapValues": "error",
+				"noYamlEmptySequenceEntries": "error",
+				"usePackageJsonValidLicense": "error",
+				"useValidNamespaceImports": "error"
 			}
 		},
 		"domains": {
