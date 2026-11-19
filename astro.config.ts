@@ -4,27 +4,25 @@ import { defineConfig, logHandlers, svgoOptimizer } from "astro/config";
 import browserslist from "browserslist";
 import { browserslistToTargets } from "lightningcss";
 
+const isProductionBuild =
+	process.argv.includes("build") || process.env.CI === "true";
+
 export default defineConfig({
 	site: "https://alexanderniebuhr.me",
 	output: "server",
 	adapter: cloudflare({
 		imageService: {
-			build: "cloudflare-binding",
+			build: "compile",
 			runtime: "cloudflare-binding",
 		},
-		remoteBindings: process.env.CLOUDFLARE_VITE_FORCE_LOCAL !== "true",
 	}),
 	compressHTML: "jsx",
 	session: false,
-	logger: logHandlers.json(),
+	...(isProductionBuild ? { logger: logHandlers.json() } : {}),
 	experimental: {
-		clientPrerender: true,
 		contentIntellisense: true,
 		svgOptimizer: svgoOptimizer(),
 		incrementalBuild: true,
-	},
-	prefetch: {
-		defaultStrategy: "hover",
 	},
 	integrations: [sitemap()],
 	devToolbar: {
@@ -35,23 +33,12 @@ export default defineConfig({
 			transformer: "lightningcss",
 			lightningcss: {
 				targets: browserslistToTargets(
-					browserslist([
-						"> 0.5%",
-						"last 2 versions",
-						"Firefox ESR",
-						"not dead",
-						"cover 80% in CN",
-						"unreleased versions",
-					]),
+					browserslist(["baseline widely available"]),
 				),
 				drafts: {
 					customMedia: true,
 				},
 			},
-		},
-		build: {
-			minify: false,
-			cssMinify: false,
 		},
 	},
 });

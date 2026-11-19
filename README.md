@@ -70,6 +70,6 @@ Pull requests from this repository also get a Preview named `pr-<number>`: CI bu
 
 Required repository secret:
 
-- `CLOUDFLARE_API_TOKEN`: an API token for the account in `cloudflare.config.ts` that can deploy the Worker and its Previews to its custom domains (for example the "Edit Cloudflare Workers" template) and use Cloudflare Images. The build needs it too, because the `IMAGES` binding connects to Cloudflare remotely.
+- `CLOUDFLARE_API_TOKEN`: an API token for the account in `cloudflare.config.ts` that can deploy the Worker and its Previews to its custom domains (for example the "Edit Cloudflare Workers" template).
 
-Pull requests from forks get no secrets, so they get no Preview and build with `CLOUDFLARE_VITE_FORCE_LOCAL=true`, which simulates the `IMAGES` binding locally.
+Pull requests from forks get no secrets, so they skip preview deployment while still running lint, type-check, and build verification.

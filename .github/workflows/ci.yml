@@ -61,19 +61,7 @@ jobs:
         run: aubr --no-install check
 
       - name: Build
-        if: env.HAS_CLOUDFLARE_API_TOKEN == 'true' || github.event_name == 'push'
         run: aubr --no-install build
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-
-      # Pull requests from forks get no secrets, so the remote IMAGES binding cannot connect.
-      - name: Build with local bindings
-        if: env.HAS_CLOUDFLARE_API_TOKEN != 'true' && github.event_name == 'pull_request'
-        run: |
-          echo "::warning title=Local bindings::CLOUDFLARE_API_TOKEN is unavailable, so the build simulates the IMAGES binding locally instead of using Cloudflare Images."
-          aubr --no-install build
-        env:
-          CLOUDFLARE_VITE_FORCE_LOCAL: "true"
 
       - name: Validate deploy
         run: aube exec --no-install -- cf deploy --prebuilt --mode production --dry-run
