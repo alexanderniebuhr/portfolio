@@ -1,0 +1,145 @@
+---
+import "../styles/global.css";
+import Center from "../components/layout/Center.astro";
+import Cluster from "../components/layout/Cluster.astro";
+import Icon from "../components/layout/Icon.astro";
+import Stack from "../components/layout/Stack.astro";
+import { SITE, SOCIAL_LINKS } from "../data/profile";
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = SITE.description } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? SITE.url);
+const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
+
+const navItems = [
+	{ label: "Overview", href: "/" },
+	{ label: "Work & CV", href: "/work" },
+] as const;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="color-scheme" content="light dark">
+		<meta name="text-scale" content="scale">
+		<meta name="generator" content={Astro.generator}>
+		<title>{title}</title>
+		<meta name="description" content={description}>
+		<link rel="canonical" href={canonicalUrl.href}>
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+		<link rel="sitemap" href="/sitemap-index.xml">
+		<meta property="og:type" content="website">
+		<meta property="og:title" content={title}>
+		<meta property="og:description" content={description}>
+		<meta property="og:url" content={canonicalUrl.href}>
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:creator" content="@realalexniebuhr">
+		<meta name="twitter:title" content={title}>
+		<meta name="twitter:description" content={description}>
+		<script is:inline type="speculationrules">
+			{
+				"prefetch": [
+					{
+						"tag": "portfolio-prefetch",
+						"where": {
+							"and": [
+								{ "href_matches": "/*" },
+								{ "not": { "href_matches": "/*.xml" } },
+								{ "not": { "selector_matches": "[rel~=nofollow]" } }
+							]
+						},
+						"eagerness": "eager"
+					}
+				],
+				"prerender": [
+					{
+						"tag": "portfolio-prerender",
+						"where": {
+							"and": [
+								{ "href_matches": "/*" },
+								{ "not": { "href_matches": "/*.xml" } },
+								{ "not": { "selector_matches": "[rel~=nofollow]" } }
+							]
+						},
+						"eagerness": "moderate"
+					}
+				]
+			}
+		</script>
+	</head>
+	<body>
+		<a href="#main-content" class="skip-link visually-hidden">
+			Skip to main content
+		</a>
+
+		<header class="site-header no-print">
+			<Center max="var(--measure-wide)">
+				<Cluster justify="space-between" space="var(--space-s)">
+					<a href="/" class="site-brand">{SITE.name}</a>
+					<nav aria-label="Primary">
+						<Cluster as="ul" space="var(--space-m)">
+							{navItems.map((item) => {
+								const isCurrent = pathname === item.href;
+								return (
+									<li>
+										<a
+											href={item.href}
+											class="nav-link"
+											aria-current={isCurrent ? "page" : undefined}
+										>
+											{item.label}
+										</a>
+									</li>
+								);
+							})}
+						</Cluster>
+					</nav>
+				</Cluster>
+			</Center>
+		</header>
+
+		<main class="site-main">
+			<slot />
+		</main>
+
+		<footer class="site-footer no-print">
+			<Center max="var(--measure-wide)">
+				<Stack space="var(--space-m)">
+					<Cluster justify="space-between" space="var(--space-m)">
+						<Stack space="var(--space-2xs)">
+							<p class="measure-none">
+								<strong>{SITE.name}</strong> — {SITE.role}
+							</p>
+							<p class="meta-mono measure-none">
+								{SITE.location} · Built with Astro, Every Layout &amp; modern
+								CSS
+							</p>
+						</Stack>
+						<Cluster as="ul" listSemantics space="var(--space-s)">
+							{SOCIAL_LINKS.map((link) => (
+								<li>
+									<a href={link.href} class="action-link with-icon">
+										{link.label}
+										<Icon name="arrow-up-right" />
+									</a>
+								</li>
+							))}
+							<li>
+								<a href={`mailto:${SITE.email}`} class="action-link">Email</a>
+							</li>
+							<li>
+								<a href="/impressum" class="action-link" lang="de">Impressum</a>
+							</li>
+						</Cluster>
+					</Cluster>
+				</Stack>
+			</Center>
+		</footer>
+	</body>
+</html>

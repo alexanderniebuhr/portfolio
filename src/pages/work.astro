@@ -1,0 +1,169 @@
+---
+export const prerender = true;
+
+import ExportActions from "../components/ExportActions.astro";
+import Box from "../components/layout/Box.astro";
+import Center from "../components/layout/Center.astro";
+import Cluster from "../components/layout/Cluster.astro";
+import Grid from "../components/layout/Grid.astro";
+import Icon from "../components/layout/Icon.astro";
+import Sidebar from "../components/layout/Sidebar.astro";
+import Stack from "../components/layout/Stack.astro";
+import Switcher from "../components/layout/Switcher.astro";
+import { CAPABILITIES, EXPERIENCE, PROJECTS, SITE } from "../data/profile";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+	title={`Work & CV | ${SITE.name}`}
+	description={`Curriculum vitae, engineering experience, and open-source work of ${SITE.name} — ${SITE.role}.`}
+>
+	<Center max="var(--measure-wide)">
+		<Stack space="var(--space-2xl)">
+			<section class="hero-container">
+				<Stack space="var(--space-m)">
+					<h1 id="main-content" tabindex="-1" class="hero-title">
+						Work &amp; CV
+					</h1>
+					<p class="eyebrow"> {SITE.name} · {SITE.location} </p>
+					<p class="lead">
+						Over a decade of shipping backend infrastructure, cloud-native web
+						platforms, open-source tooling, and accessible user interfaces —
+						alongside engineers from Google, Meta, Cloudflare, and Vercel.
+					</p>
+					<p class="print-only meta-mono measure-none">
+						{SITE.url} · {SITE.email} · github.com/alexanderniebuhr ·
+						linkedin.com/in/alexanderniebuhr · x.com/realalexniebuhr
+					</p>
+					<Cluster space="var(--space-s)" class="no-print">
+						<a href={`mailto:${SITE.email}`} class="action-primary">
+							Get in touch
+						</a>
+						<ExportActions idPrefix="work" showPrint triggerLabel="Copy CV" />
+						<a
+							href="https://github.com/alexanderniebuhr"
+							class="action-link with-icon"
+						>
+							GitHub profile
+							<Icon name="arrow-up-right" />
+						</a>
+						<a
+							href="https://www.linkedin.com/in/alexanderniebuhr/"
+							class="action-link with-icon"
+						>
+							LinkedIn profile
+							<Icon name="arrow-up-right" />
+						</a>
+					</Cluster>
+				</Stack>
+			</section>
+
+			<section class="section-block">
+				<Stack space="var(--space-l)">
+					<Stack space="var(--space-xs)">
+						<p class="eyebrow">Curriculum Vitae</p>
+						<h2>Experience</h2>
+					</Stack>
+
+					<Stack as="ol" listSemantics space="var(--space-l)" class="cv-list">
+						{EXPERIENCE.map((entry) => (
+							<li>
+								<Sidebar
+									sideWidth="15rem"
+									contentMin="62%"
+									space="var(--space-m)"
+								>
+									<Stack space="var(--space-2xs)">
+										<p class="meta-mono measure-none">{entry.period}</p>
+										<p class="muted measure-none">{entry.location}</p>
+									</Stack>
+									<Stack space="var(--space-s)">
+										<Stack space="var(--space-2xs)">
+											<h3>
+												{entry.role} ·{" "}
+												{entry.organizationUrl ? (
+													<a href={entry.organizationUrl}>
+														{entry.organization}
+													</a>
+												) : (
+													entry.organization
+												)}
+											</h3>
+											<p class="muted">{entry.summary}</p>
+										</Stack>
+										<ul class="bullet-list">
+											{entry.highlights.map((item) => (
+												<li>{item}</li>
+											))}
+										</ul>
+									</Stack>
+								</Sidebar>
+							</li>
+						))}
+					</Stack>
+				</Stack>
+			</section>
+
+			<section class="section-block">
+				<Stack space="var(--space-l)">
+					<Sidebar sideWidth="16rem" contentMin="60%" space="var(--space-m)">
+						<Stack space="var(--space-xs)">
+							<p class="eyebrow">Selected Work</p>
+							<h2>Open source &amp; projects</h2>
+						</Stack>
+						<p class="muted">
+							Active maintenance across the Astro ecosystem, Cloudflare Workers
+							tooling, CSS utilities, and hardware integrations.
+						</p>
+					</Sidebar>
+
+					<Grid
+						as="ul"
+						listSemantics
+						min="19rem"
+						space="var(--space-m)"
+						class="card-grid"
+					>
+						{PROJECTS.map((project) => (
+							<Box as="li" class="editorial-card">
+								<Stack space="var(--space-2xs)">
+									<p class="meta-mono measure-none">{project.role}</p>
+									<h3>
+										<a href={project.href} class="action-link with-icon">
+											{project.name}
+											<Icon name="arrow-up-right" />
+										</a>
+									</h3>
+								</Stack>
+								<p class="muted">{project.summary}</p>
+								<Cluster as="ul" listSemantics space="var(--space-2xs)">
+									{project.tags.map((tag) => (
+										<li class="tag">{tag}</li>
+									))}
+								</Cluster>
+							</Box>
+						))}
+					</Grid>
+				</Stack>
+			</section>
+
+			<section class="section-block">
+				<Stack space="var(--space-l)">
+					<Stack space="var(--space-xs)">
+						<p class="eyebrow">Technical Profile</p>
+						<h2>Capabilities &amp; languages</h2>
+					</Stack>
+
+					<Switcher threshold="44rem" space="var(--space-l)">
+						{CAPABILITIES.map((group) => (
+							<dl class="capability-list">
+								<dt>{group.title}</dt>
+								<dd>{group.items}</dd>
+							</dl>
+						))}
+					</Switcher>
+				</Stack>
+			</section>
+		</Stack>
+	</Center>
+</BaseLayout>

@@ -1,25 +1,184 @@
 ---
 export const prerender = true;
 
-import "../styles/global.css";
+import ExportActions from "../components/ExportActions.astro";
+import Box from "../components/layout/Box.astro";
+import Center from "../components/layout/Center.astro";
+import Cluster from "../components/layout/Cluster.astro";
+import Grid from "../components/layout/Grid.astro";
+import Icon from "../components/layout/Icon.astro";
+import Sidebar from "../components/layout/Sidebar.astro";
+import Stack from "../components/layout/Stack.astro";
+import { EXPERIENCE, FOCUS_AREAS, SITE, SOCIAL_LINKS } from "../data/profile";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const featuredExperience = EXPERIENCE.slice(0, 2);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="generator" content={Astro.generator}>
-		<style is:inline>
-			@media (prefers-reduced-motion: no-preference) {
-				@view-transition {
-					navigation: auto;
-				}
-			}
-		</style>
+<BaseLayout title={`${SITE.name} — ${SITE.role}`}>
+	<Center max="var(--measure-wide)">
+		<Stack space="var(--space-2xl)">
+			<section class="hero-container">
+				<Stack space="var(--space-m)">
+					<h1 id="main-content" tabindex="-1" class="hero-title">
+						{SITE.name}
+					</h1>
+					<p class="eyebrow"> {SITE.role} · {SITE.location} </p>
+					<p class="lead">
+						Staff Engineer with 10+ years of experience building scalable web
+						platforms, cloud-native developer tooling, and accessible,
+						browser-native interfaces.
+					</p>
+					<p>
+						I maintain <strong>Astro</strong> core, run{" "}
+						<a href="https://craftlions.com">craftlions</a>, and have
+						collaborated with engineers from <strong>Google</strong>,{" "}
+						<strong>Meta</strong>, <strong>Cloudflare</strong>, and{" "}
+						<strong>Vercel</strong> — including early foundational work that
+						later evolved into <strong>Cloudflare Software Factory</strong>.
+					</p>
+					<Cluster space="var(--space-s)">
+						<a href="/work" class="action-primary with-icon">
+							View work &amp; CV
+							<Icon name="arrow-right" />
+						</a>
+						<ExportActions idPrefix="home" triggerLabel="Copy profile" />
+						{SOCIAL_LINKS.slice(0, 3).map((link) => (
+							<a href={link.href} class="action-link with-icon">
+								{link.label}
+								<Icon name="arrow-up-right" />
+							</a>
+						))}
+					</Cluster>
+				</Stack>
+			</section>
 
-		<link rel="sitemap" href="/sitemap-index.xml">
-	</head>
-	<body>
-		Hello, World!
-	</body>
-</html>
+			<section class="section-block">
+				<Stack space="var(--space-l)">
+					<Sidebar sideWidth="16rem" contentMin="60%" space="var(--space-m)">
+						<Stack space="var(--space-xs)">
+							<p class="eyebrow">Focus</p>
+							<h2>What I build</h2>
+						</Stack>
+						<p class="muted">
+							Durable web architecture that leans on browser standards, clean
+							platform primitives, and inclusive design rather than unnecessary
+							complexity.
+						</p>
+					</Sidebar>
+
+					<Grid
+						as="ul"
+						listSemantics
+						min="18rem"
+						space="var(--space-m)"
+						class="card-grid"
+					>
+						{FOCUS_AREAS.map((area) => (
+							<Box as="li" class="editorial-card">
+								<h3>{area.title}</h3>
+								<p class="muted">{area.summary}</p>
+								<p class="meta-mono measure-none">{area.meta}</p>
+							</Box>
+						))}
+					</Grid>
+				</Stack>
+			</section>
+
+			<section class="section-block">
+				<Stack space="var(--space-l)">
+					<Cluster justify="space-between" space="var(--space-s)">
+						<Stack space="var(--space-xs)">
+							<p class="eyebrow">Currently</p>
+							<h2>Selected leadership &amp; impact</h2>
+						</Stack>
+						<a href="/work" class="action-link with-icon">
+							Full CV &amp; open source
+							<Icon name="arrow-right" />
+						</a>
+					</Cluster>
+
+					<Stack as="ul" listSemantics space="var(--space-l)" class="cv-list">
+						{featuredExperience.map((entry) => (
+							<li>
+								<Sidebar
+									sideWidth="15rem"
+									contentMin="62%"
+									space="var(--space-m)"
+								>
+									<Stack space="var(--space-2xs)">
+										<p class="meta-mono measure-none">{entry.period}</p>
+										<p class="muted measure-none">{entry.location}</p>
+									</Stack>
+									<Stack space="var(--space-s)">
+										<Stack space="var(--space-2xs)">
+											<h3>
+												{entry.role} ·{" "}
+												{entry.organizationUrl ? (
+													<a href={entry.organizationUrl}>
+														{entry.organization}
+													</a>
+												) : (
+													entry.organization
+												)}
+											</h3>
+											<p class="muted">{entry.summary}</p>
+										</Stack>
+										<ul class="bullet-list">
+											{entry.highlights.map((item) => (
+												<li>{item}</li>
+											))}
+										</ul>
+									</Stack>
+								</Sidebar>
+							</li>
+						))}
+					</Stack>
+				</Stack>
+			</section>
+
+			<section class="section-block">
+				<Sidebar sideWidth="16rem" contentMin="60%" space="var(--space-m)">
+					<Stack space="var(--space-xs)">
+						<p class="eyebrow">Contact</p>
+						<h2>Let&apos;s work together</h2>
+					</Stack>
+					<Stack space="var(--space-m)">
+						<p>
+							Available through{" "}
+							<a href="https://craftlions.com">craftlions</a> for Staff-level
+							platform engineering, technical advisory, architecture reviews,
+							and team workshops.
+						</p>
+						<Cluster space="var(--space-m)">
+							<a href={`mailto:${SITE.email}`} class="action-primary">
+								{SITE.email}
+							</a>
+							<a
+								href="https://www.linkedin.com/in/alexanderniebuhr/"
+								class="action-link with-icon"
+							>
+								LinkedIn
+								<Icon name="arrow-up-right" />
+							</a>
+							<a
+								href="https://github.com/alexanderniebuhr"
+								class="action-link with-icon"
+							>
+								GitHub
+								<Icon name="arrow-up-right" />
+							</a>
+							<a
+								href="https://x.com/realalexniebuhr"
+								class="action-link with-icon"
+							>
+								X
+								<Icon name="arrow-up-right" />
+							</a>
+						</Cluster>
+					</Stack>
+				</Sidebar>
+			</section>
+		</Stack>
+	</Center>
+</BaseLayout>

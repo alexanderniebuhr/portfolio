@@ -1,0 +1,88 @@
+---
+export const prerender = true;
+
+import Center from "../components/layout/Center.astro";
+import Sidebar from "../components/layout/Sidebar.astro";
+import Stack from "../components/layout/Stack.astro";
+import { IMPRINT, SITE } from "../data/profile";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+	title={`Impressum | ${SITE.name}`}
+	description={`Legal notice (Impressum) for ${SITE.name} (${SITE.url}).`}
+>
+	<Center max="var(--measure-wide)">
+		<Stack space="var(--space-2xl)">
+			<section class="hero-container">
+				<Stack space="var(--space-m)">
+					<h1 id="main-content" tabindex="-1" class="hero-title" lang="de">
+						Impressum
+					</h1>
+					<p class="eyebrow">Legal Notice · {SITE.url}</p>
+					<p class="lead" lang="de">
+						Gesetzliche Pflichtangaben für diese persönliche Website von{" "}
+						{IMPRINT.name}.
+					</p>
+				</Stack>
+			</section>
+
+			<section class="section-block" lang="de">
+				<Sidebar sideWidth="16rem" contentMin="60%" space="var(--space-m)">
+					<Stack space="var(--space-xs)">
+						<p class="eyebrow">§ 5 DDG</p>
+						<h2>Angaben gemäß § 5 DDG</h2>
+					</Stack>
+					<Stack space="var(--space-s)">
+						<address class="imprint-address">
+							<strong>{IMPRINT.name}</strong>
+							<br>
+							{IMPRINT.street}
+							<br>
+							{IMPRINT.city}
+							<br>
+							Deutschland
+						</address>
+						<p>
+							E-Mail:{" "}
+							<a href={`mailto:${IMPRINT.email}`}>{IMPRINT.email}</a>
+						</p>
+					</Stack>
+				</Sidebar>
+			</section>
+
+			<section class="section-block" lang="de">
+				<Sidebar sideWidth="16rem" contentMin="60%" space="var(--space-m)">
+					<Stack space="var(--space-xs)">
+						<p class="eyebrow">§ 18 MStV</p>
+						<h2>Redaktionell verantwortlich</h2>
+					</Stack>
+					<Stack space="var(--space-s)">
+						<p>
+							Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:{" "}
+							{IMPRINT.name}, {IMPRINT.street}, {IMPRINT.city}, Deutschland.
+						</p>
+						<p class="muted">
+							Geschäftliche Anfragen über die{" "}
+							<a href="https://craftlions.com/imprint">{IMPRINT.company}</a>.
+						</p>
+					</Stack>
+				</Sidebar>
+			</section>
+
+			<section class="section-block" lang="de">
+				<Sidebar sideWidth="16rem" contentMin="60%" space="var(--space-m)">
+					<Stack space="var(--space-xs)">
+						<p class="eyebrow">§ 36 VSBG</p>
+						<h2>Verbraucherstreitbeilegung</h2>
+					</Stack>
+					<p class="muted">
+						Ich bin weder verpflichtet noch bereit, an einem
+						Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
+						teilzunehmen.
+					</p>
+				</Sidebar>
+			</section>
+		</Stack>
+	</Center>
+</BaseLayout>
