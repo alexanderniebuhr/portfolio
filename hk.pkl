@@ -16,7 +16,7 @@ steps {
       "**/*.yaml",
       "**/*.yml",
     )
-    exclude = List("aube-lock.yaml")
+    exclude = List("aube-lock.yaml", ".agents/**", ".claude/**")
     cache = true
     cache_inputs = List(
       "**/*.ts",

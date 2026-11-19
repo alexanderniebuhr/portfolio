@@ -7,7 +7,7 @@
 		"defaultBranch": "main"
 	},
 	"files": {
-		"includes": ["**", "!**/aube-lock.yaml"]
+		"includes": ["**", "!**/aube-lock.yaml", "!**/.agents", "!**/.claude"]
 	},
 	"formatter": {
 		"enabled": true
