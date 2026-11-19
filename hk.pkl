@@ -17,6 +17,21 @@ steps {
       "**/*.yml",
     )
     exclude = List("aube-lock.yaml")
+    cache = true
+    cache_inputs = List(
+      "**/*.ts",
+      "**/*.mts",
+      "**/*.js",
+      "**/*.mjs",
+      "**/*.json",
+      "**/*.jsonc",
+      "**/*.css",
+      "**/*.astro",
+      "**/*.md",
+      "**/*.yaml",
+      "**/*.yml",
+      "mise.toml",
+    )
   }
 }
 
@@ -32,6 +47,16 @@ hooks {
     steps {
       ["typecheck"] {
         check = "aubr check"
+        cache = true
+        cache_inputs = List(
+          "**/*.ts",
+          "**/*.mts",
+          "**/*.astro",
+          "tsconfig.json",
+          "package.json",
+          "aube-lock.yaml",
+          "mise.toml",
+        )
       }
     }
   }
