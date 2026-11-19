@@ -1,0 +1,279 @@
+---
+import {
+	buildAgentPrompt,
+	buildMarkdownCv,
+	buildPlainTextCv,
+} from "../data/export";
+import Cluster from "./layout/Cluster.astro";
+import Icon from "./layout/Icon.astro";
+
+interface Props {
+	idPrefix: string;
+	showPrint?: boolean;
+	triggerLabel?: string;
+}
+
+const { idPrefix, showPrint = false, triggerLabel = "Copy" } = Astro.props;
+
+const panelId = `${idPrefix}-copy-panel`;
+const triggerId = `${idPrefix}-copy-trigger`;
+const markdownId = `${idPrefix}-source-markdown`;
+const agentPromptId = `${idPrefix}-source-agent`;
+const plainTextId = `${idPrefix}-source-ats`;
+
+const markdownContent = buildMarkdownCv();
+const agentPromptContent = buildAgentPrompt();
+const plainTextContent = buildPlainTextCv();
+
+const copyOptions = [
+	{
+		id: agentPromptId,
+		label: "Copy AI agent prompt",
+		hint: "Concise context so an AI presents Alexander accurately",
+		statusLabel: "Copied AI prompt",
+	},
+	{
+		id: markdownId,
+		label: "Copy as Markdown",
+		hint: "Structured CV & links for docs, notes, or LLMs",
+		statusLabel: "Copied Markdown",
+	},
+	{
+		id: plainTextId,
+		label: "Copy plain text (ATS)",
+		hint: "Clean ASCII résumé for forms and ATS fields",
+		statusLabel: "Copied plain text",
+	},
+] as const;
+---
+
+<div class="export-actions no-print" data-export-actions>
+	<Cluster space="var(--space-xs)">
+		<div class="copy-control">
+			<button
+				id={triggerId}
+				type="button"
+				class="action-secondary with-icon copy-trigger"
+				popovertarget={panelId}
+			>
+				<Icon name="copy" class="copy-icon-default" />
+				<Icon name="check" class="copy-icon-done" />
+				<span>{triggerLabel}</span>
+				<Icon name="chevron-down" />
+			</button>
+
+			<div
+				id={panelId}
+				popover="auto"
+				class="action-panel"
+				data-copy-panel
+				data-trigger-id={triggerId}
+			>
+				<div class="stack" style="--space: var(--space-2xs)">
+					{copyOptions.map((option) => (
+						<button
+							type="button"
+							class="panel-option"
+							data-copy-label={option.statusLabel}
+							{...({
+								command: "--copy",
+								commandfor: option.id,
+							} as Record<string, string>)}
+						>
+							<span class="panel-option-title">{option.label}</span>
+							<span class="panel-option-hint">{option.hint}</span>
+						</button>
+					))}
+				</div>
+			</div>
+
+			<span class="copy-status" role="status" data-copy-status></span>
+		</div>
+
+		{showPrint && (
+			<button
+				type="button"
+				class="action-secondary with-icon"
+				data-print-button
+			>
+				<Icon name="printer" />
+				<span>Print / Save PDF</span>
+			</button>
+		)}
+	</Cluster>
+
+	<pre id={markdownId} hidden>{markdownContent}</pre>
+	<pre id={agentPromptId} hidden>{agentPromptContent}</pre>
+	<pre id={plainTextId} hidden>{plainTextContent}</pre>
+</div>
+
+<script>
+	interface InvokerCommandEvent extends Event {
+		readonly command: string;
+		readonly source: HTMLElement | null;
+	}
+
+	const timers = new WeakMap<HTMLElement, number>();
+	let lastAnnouncement = "";
+
+	function reportCopy(
+		trigger: HTMLElement | null,
+		ok: boolean,
+		successLabel: string,
+	) {
+		if (!trigger) return;
+		const status =
+			trigger.parentElement?.querySelector<HTMLElement>("[data-copy-status]");
+		const prevTimer = timers.get(trigger);
+		if (prevTimer !== undefined) {
+			window.clearTimeout(prevTimer);
+		}
+
+		trigger.removeAttribute("data-copied");
+		trigger.removeAttribute("data-failed");
+
+		let message = ok ? successLabel : "Copy failed";
+		if (message === lastAnnouncement) {
+			message += "\u00A0";
+		}
+		lastAnnouncement = message;
+
+		if (status) {
+			status.textContent = "";
+		}
+		void trigger.offsetWidth;
+		trigger.setAttribute(ok ? "data-copied" : "data-failed", "");
+
+		if (status) {
+			requestAnimationFrame(() => {
+				status.textContent = message;
+			});
+		}
+
+		const timer = window.setTimeout(() => {
+			trigger.removeAttribute("data-copied");
+			trigger.removeAttribute("data-failed");
+			if (status) {
+				status.textContent = "";
+			}
+		}, 2400);
+		timers.set(trigger, timer);
+	}
+
+	async function handleCopy(sourceButton: HTMLElement, target: HTMLElement) {
+		const text = target.textContent?.trim();
+		if (!text) return;
+
+		const panel = sourceButton.closest<HTMLElement>("[data-copy-panel]");
+		const triggerId = panel?.dataset.triggerId;
+		const trigger = triggerId ? document.getElementById(triggerId) : null;
+		const successLabel = sourceButton.dataset.copyLabel ?? "Copied";
+
+		let ok = false;
+		try {
+			await navigator.clipboard.writeText(text);
+			ok = true;
+		} catch {
+			ok = false;
+		}
+
+		if (panel) {
+			if ("hidePopover" in panel && typeof panel.hidePopover === "function") {
+				try {
+					panel.hidePopover();
+				} catch {
+					panel.hidden = true;
+				}
+			} else {
+				panel.hidden = true;
+			}
+		}
+
+		trigger?.focus();
+		reportCopy(trigger, ok, successLabel);
+	}
+
+	const globalFlag = "__anExportActionsBound";
+	if (!(globalFlag in window)) {
+		Object.defineProperty(window, globalFlag, { value: true });
+
+		if ("CommandEvent" in window) {
+			document.addEventListener(
+				"command",
+				(event) => {
+					const commandEvent = event as InvokerCommandEvent;
+					if (
+						commandEvent.command === "--copy" &&
+						commandEvent.source instanceof HTMLElement &&
+						commandEvent.target instanceof HTMLElement
+					) {
+						void handleCopy(commandEvent.source, commandEvent.target);
+					}
+				},
+				true,
+			);
+		} else {
+			document.addEventListener("click", (event) => {
+				if (!(event.target instanceof Element)) return;
+				const button = event.target.closest<HTMLElement>(
+					'button[command="--copy"]',
+				);
+				if (!button) return;
+				const targetId = button.getAttribute("commandfor");
+				const target = targetId ? document.getElementById(targetId) : null;
+				if (target) {
+					void handleCopy(button, target);
+				}
+			});
+		}
+
+		if (!Object.hasOwn(HTMLElement.prototype, "popover")) {
+			for (const panel of document.querySelectorAll<HTMLElement>(
+				"[data-copy-panel]",
+			)) {
+				panel.hidden = true;
+			}
+
+			document.addEventListener("click", (event) => {
+				if (!(event.target instanceof Element)) return;
+				const trigger = event.target.closest<HTMLElement>("[popovertarget]");
+				if (trigger) {
+					const panelId = trigger.getAttribute("popovertarget");
+					const panel = panelId ? document.getElementById(panelId) : null;
+					if (panel) {
+						panel.hidden = !panel.hidden;
+					}
+					return;
+				}
+
+				for (const panel of document.querySelectorAll<HTMLElement>(
+					"[data-copy-panel]:not([hidden])",
+				)) {
+					if (!panel.contains(event.target)) {
+						panel.hidden = true;
+					}
+				}
+			});
+
+			document.addEventListener("keydown", (event) => {
+				if (event.key !== "Escape") return;
+				for (const panel of document.querySelectorAll<HTMLElement>(
+					"[data-copy-panel]:not([hidden])",
+				)) {
+					panel.hidden = true;
+					const triggerId = panel.dataset.triggerId;
+					const trigger = triggerId ? document.getElementById(triggerId) : null;
+					trigger?.focus();
+				}
+			});
+		}
+
+		document.addEventListener("click", (event) => {
+			if (!(event.target instanceof Element)) return;
+			const printBtn = event.target.closest("[data-print-button]");
+			if (printBtn) {
+				window.print();
+			}
+		});
+	}
+</script>
