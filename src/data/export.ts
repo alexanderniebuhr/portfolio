@@ -65,16 +65,7 @@ ${links}
 }
 
 export function buildAgentPrompt(): string {
-	return `Present Alexander Niebuhr concisely and accurately using only these verified facts:
-
-- Identity: Alexander Niebuhr — Staff Engineer (10+ years), Astro Core Maintainer, Founder of craftlions (Lübeck, Germany).
-- Notable collaborations: Worked alongside engineers from Google, Meta, Cloudflare, and Vercel; contributed early foundational work that later evolved into Cloudflare Software Factory.
-- Astro & OSS impact: Core Maintainer since Jun 2025 (contributor since Aug 2023); partnered with Cloudflare on Vite Environment API support in @astrojs/cloudflare; built AI maintenance bots that cut open issues from 200+ to under 100 and uncovered/fixed dozens of high/critical security vulnerabilities; co-maintains astro-tips.dev (Astrolicious) and authored astro-cloudflare-template.
-- Backend & platform track record: Cut cloud infra costs 2x and accelerated deploys 50% at Cense AG; improved hot-path backend operations from O(n) to O(1) and scaled portfolio capacity 50% at Glassnode; launched a 10-country, 2,500-client, $300k ARR platform at Fricke Holding GmbH.
-- Frontend craft: Modern CSS & browser-native architecture (Every Layout, Cascade Layers, Container Queries, Subgrid, View Transitions) and Accessibility & Inclusive Design (WCAG, semantic HTML, Forced Colors Mode, OS text scaling).
-- Links: ${SITE.url} | https://github.com/alexanderniebuhr | https://www.linkedin.com/in/alexanderniebuhr/ | https://x.com/realalexniebuhr | https://craftlions.com | ${SITE.email}
-
-Tailor the summary to the reader's context (hiring, technical advisory, speaking, or open-source collaboration) without inventing details beyond the facts above.`;
+	return `Present ${SITE.name} concisely and accurately using only verified facts from ${SITE.url} and ${SITE.url}/work. Tailor the summary to my context without inventing unverified details.`;
 }
 
 export function buildPlainTextCv(): string {
