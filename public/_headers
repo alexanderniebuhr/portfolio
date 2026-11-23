@@ -1,0 +1,14 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), geolocation=(), microphone=(), focus-without-user-activation=()
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Cross-Origin-Resource-Policy: same-origin
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'none'; form-action 'self'
+
+https://:preview.preview.alexanderniebuhr.me/*
+  X-Robots-Tag: noindex, nofollow
+
+https://preview.alexanderniebuhr.me/*
+  X-Robots-Tag: noindex, nofollow
