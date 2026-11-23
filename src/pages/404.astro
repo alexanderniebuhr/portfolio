@@ -1,0 +1,41 @@
+---
+export const prerender = true;
+
+import Center from "../components/layout/Center.astro";
+import Cluster from "../components/layout/Cluster.astro";
+import Icon from "../components/layout/Icon.astro";
+import Stack from "../components/layout/Stack.astro";
+import { SITE } from "../data/profile.ts";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+	title={`Page not found | ${SITE.name}`}
+	description={`The requested page could not be found on ${SITE.url}.`}
+	noindex
+>
+	<Center max="var(--measure-wide)">
+		<section class="hero-container">
+			<Stack space="var(--space-m)">
+				<h1 id="main-content" tabindex="-1" class="hero-title">
+					Page not found
+				</h1>
+				<p class="eyebrow">404 · Not Found</p>
+				<p class="lead">
+					This path does not exist on {SITE.url}. You can head back to the
+					overview or jump straight to the full CV.
+				</p>
+				<Cluster space="var(--space-s)">
+					<a href="/" class="action-primary with-icon">
+						Back to overview
+						<Icon name="arrow-right" />
+					</a>
+					<a href="/work" class="action-secondary with-icon">
+						Work &amp; CV
+						<Icon name="arrow-right" />
+					</a>
+				</Cluster>
+			</Stack>
+		</section>
+	</Center>
+</BaseLayout>

@@ -9,9 +9,10 @@ import { SITE, SOCIAL_LINKS } from "../data/profile";
 interface Props {
 	title: string;
 	description?: string;
+	noindex?: boolean;
 }
 
-const { title, description = SITE.description } = Astro.props;
+const { title, description = SITE.description, noindex = false } = Astro.props;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? SITE.url);
 const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
 
@@ -19,6 +20,35 @@ const navItems = [
 	{ label: "Overview", href: "/" },
 	{ label: "Work & CV", href: "/work" },
 ] as const;
+
+const structuredData = JSON.stringify({
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "Person",
+			"@id": `${SITE.url}/#person`,
+			name: SITE.name,
+			jobTitle: SITE.role,
+			description: SITE.description,
+			url: SITE.url,
+			email: `mailto:${SITE.email}`,
+			address: {
+				"@type": "PostalAddress",
+				addressLocality: "Lübeck",
+				addressCountry: "DE",
+			},
+			sameAs: SOCIAL_LINKS.map((link) => link.href),
+		},
+		{
+			"@type": "WebSite",
+			"@id": `${SITE.url}/#website`,
+			url: SITE.url,
+			name: SITE.name,
+			description: SITE.description,
+			author: { "@id": `${SITE.url}/#person` },
+		},
+	],
+});
 ---
 
 <!doctype html>
@@ -31,10 +61,14 @@ const navItems = [
 		<meta name="generator" content={Astro.generator}>
 		<title>{title}</title>
 		<meta name="description" content={description}>
-		<link rel="canonical" href={canonicalUrl.href}>
+		{noindex && <meta name="robots" content="noindex, nofollow">}
+		{!noindex && <link rel="canonical" href={canonicalUrl.href}>}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 		<link rel="sitemap" href="/sitemap-index.xml">
+		<link rel="expect" href="#main-content" blocking="render">
 		<meta property="og:type" content="website">
+		<meta property="og:site_name" content={SITE.name}>
+		<meta property="og:locale" content="en_US">
 		<meta property="og:title" content={title}>
 		<meta property="og:description" content={description}>
 		<meta property="og:url" content={canonicalUrl.href}>
@@ -42,6 +76,7 @@ const navItems = [
 		<meta name="twitter:creator" content="@realalexniebuhr">
 		<meta name="twitter:title" content={title}>
 		<meta name="twitter:description" content={description}>
+		<script is:inline type="application/ld+json" set:html={structuredData} />
 		<script is:inline type="speculationrules">
 			{
 				"prefetch": [
@@ -52,6 +87,8 @@ const navItems = [
 								{ "href_matches": "/*" },
 								{ "not": { "href_matches": "/*.xml" } },
 								{ "not": { "href_matches": "/*.pdf" } },
+								{ "not": { "href_matches": "/*.md" } },
+								{ "not": { "href_matches": "/*.txt" } },
 								{ "not": { "selector_matches": "[rel~=nofollow]" } }
 							]
 						},
@@ -66,6 +103,8 @@ const navItems = [
 								{ "href_matches": "/*" },
 								{ "not": { "href_matches": "/*.xml" } },
 								{ "not": { "href_matches": "/*.pdf" } },
+								{ "not": { "href_matches": "/*.md" } },
+								{ "not": { "href_matches": "/*.txt" } },
 								{ "not": { "selector_matches": "[rel~=nofollow]" } }
 							]
 						},
