@@ -720,17 +720,20 @@
 		border: var(--border-thin) solid var(--color-invert-bg);
 		outline: var(--border-thin) solid transparent;
 		outline-offset: calc(var(--border-thin) * -1);
+		transition:
+			background-color 150ms ease,
+			border-color 150ms ease,
+			color 150ms ease,
+			scale 120ms ease-out;
 
 		&:hover {
 			background-color: var(--color-accent);
 			border-color: var(--color-accent);
-			color: var(--palette-surface-light);
+			color: var(--color-surface);
 		}
-	}
 
-	@media (prefers-color-scheme: dark) {
-		.action-primary:hover {
-			color: var(--palette-surface-dark);
+		&:active {
+			scale: 0.98;
 		}
 	}
 
@@ -754,25 +757,22 @@
 		transition:
 			border-color 150ms ease,
 			background-color 150ms ease,
-			color 150ms ease;
+			color 150ms ease,
+			scale 120ms ease-out;
 
 		&:hover {
 			border-color: var(--color-accent);
 			color: var(--color-accent);
 		}
-	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.action-secondary {
-			transition: none;
+		&:active {
+			scale: 0.98;
 		}
 	}
 
 	.copy-control {
 		display: inline-flex;
-		flex-wrap: wrap;
 		align-items: center;
-		gap: var(--space-xs);
 		position: relative;
 	}
 
@@ -789,7 +789,21 @@
 		color: var(--color-accent);
 	}
 
+	.copy-chevron {
+		transition: rotate 150ms ease-out;
+	}
+
+	.copy-control:has(.action-panel:is(:popover-open, .\:popover-open))
+		.copy-chevron {
+		rotate: 180deg;
+	}
+
 	.copy-status {
+		position: absolute;
+		inset-block-start: calc(100% + var(--space-2xs));
+		inset-inline-start: 0;
+		white-space: nowrap;
+		pointer-events: none;
 		font-family: var(--font-mono);
 		font-size: var(--text-xs);
 		color: var(--color-accent);
@@ -805,12 +819,6 @@
 		color: var(--color-text);
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.copy-status {
-			transition: none;
-		}
-	}
-
 	/* Native Popover action panel — retains centered UA placement where Anchor Positioning is unsupported */
 	.action-panel {
 		padding: var(--space-xs);
@@ -820,8 +828,33 @@
 		color: var(--color-text);
 		border: var(--border-thin) solid var(--color-border-strong);
 		border-radius: var(--radius-md);
+		box-shadow: 0 10px 30px rgb(0 0 0 / 0.14);
 		outline: var(--border-thin) solid transparent;
 		outline-offset: calc(var(--border-thin) * -1);
+	}
+
+	.action-panel:is(:popover-open, .\:popover-open) {
+		animation: panel-fade-in 150ms ease-out both;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.action-panel:is(:popover-open, .\:popover-open) {
+			animation:
+				panel-grow 180ms ease-out both,
+				panel-fade-in 150ms ease-out both;
+		}
+	}
+
+	@keyframes panel-fade-in {
+		from {
+			opacity: 0;
+		}
+	}
+
+	@keyframes panel-grow {
+		from {
+			scale: 0.96;
+		}
 	}
 
 	@supports (position-area: block-end) {
@@ -833,6 +866,13 @@
 				flip-block,
 				flip-inline,
 				flip-block flip-inline;
+			transform-origin: top left;
+		}
+	}
+
+	@supports not (position-area: block-end) {
+		.action-panel[popover]::backdrop {
+			background-color: rgb(0 0 0 / 0.35);
 		}
 	}
 
@@ -850,10 +890,34 @@
 		border-radius: var(--radius-sm);
 		text-align: start;
 		cursor: pointer;
+		transition:
+			background-color 150ms ease,
+			border-color 150ms ease,
+			scale 120ms ease-out;
 
 		&:hover {
 			background-color: var(--color-surface-subtle);
 			border-color: var(--color-border);
+		}
+
+		&:active {
+			scale: 0.99;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.action-primary,
+		.action-secondary,
+		.panel-option,
+		.copy-chevron,
+		.copy-status {
+			transition: none;
+		}
+
+		.action-primary:active,
+		.action-secondary:active,
+		.panel-option:active {
+			scale: none;
 		}
 	}
 
@@ -895,7 +959,7 @@
 		max-inline-size: none;
 	}
 
-	.capability-list {
+	.capability-item {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-xs);
@@ -990,7 +1054,7 @@
 
 	.cv-list > li,
 	.editorial-card,
-	.capability-list {
+	.capability-item {
 		break-inside: avoid;
 	}
 

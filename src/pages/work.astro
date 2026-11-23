@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 
+import ExperienceList from "../components/ExperienceList.astro";
 import ExportActions from "../components/ExportActions.astro";
 import Box from "../components/layout/Box.astro";
 import Center from "../components/layout/Center.astro";
@@ -10,8 +11,16 @@ import Icon from "../components/layout/Icon.astro";
 import Sidebar from "../components/layout/Sidebar.astro";
 import Stack from "../components/layout/Stack.astro";
 import Switcher from "../components/layout/Switcher.astro";
-import { CAPABILITIES, EXPERIENCE, PROJECTS, SITE } from "../data/profile";
+import {
+	CAPABILITIES,
+	EXPERIENCE,
+	PROJECTS,
+	SITE,
+	SOCIAL_LINKS,
+} from "../data/profile.ts";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const workSocialLinks = SOCIAL_LINKS.slice(0, 2);
 ---
 
 <BaseLayout
@@ -40,20 +49,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 							Get in touch
 						</a>
 						<ExportActions idPrefix="work" showPrint triggerLabel="Copy CV" />
-						<a
-							href="https://github.com/alexanderniebuhr"
-							class="action-link with-icon"
-						>
-							GitHub profile
-							<Icon name="arrow-up-right" />
-						</a>
-						<a
-							href="https://www.linkedin.com/in/alexanderniebuhr/"
-							class="action-link with-icon"
-						>
-							LinkedIn profile
-							<Icon name="arrow-up-right" />
-						</a>
+						{workSocialLinks.map((link) => (
+							<a href={link.href} class="action-link with-icon">
+								{link.label}
+								<Icon name="arrow-up-right" />
+							</a>
+						))}
 					</Cluster>
 				</Stack>
 			</section>
@@ -65,42 +66,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 						<h2>Experience</h2>
 					</Stack>
 
-					<Stack as="ol" listSemantics space="var(--space-l)" class="cv-list">
-						{EXPERIENCE.map((entry) => (
-							<li>
-								<Sidebar
-									sideWidth="15rem"
-									contentMin="62%"
-									space="var(--space-m)"
-								>
-									<Stack space="var(--space-2xs)">
-										<p class="meta-mono measure-none">{entry.period}</p>
-										<p class="muted measure-none">{entry.location}</p>
-									</Stack>
-									<Stack space="var(--space-s)">
-										<Stack space="var(--space-2xs)">
-											<h3>
-												{entry.role} ·{" "}
-												{entry.organizationUrl ? (
-													<a href={entry.organizationUrl}>
-														{entry.organization}
-													</a>
-												) : (
-													entry.organization
-												)}
-											</h3>
-											<p class="muted">{entry.summary}</p>
-										</Stack>
-										<ul class="bullet-list">
-											{entry.highlights.map((item) => (
-												<li>{item}</li>
-											))}
-										</ul>
-									</Stack>
-								</Sidebar>
-							</li>
-						))}
-					</Stack>
+					<ExperienceList entries={EXPERIENCE} as="ol" />
 				</Stack>
 			</section>
 
@@ -154,12 +120,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 						<h2>Capabilities &amp; languages</h2>
 					</Stack>
 
-					<Switcher threshold="44rem" space="var(--space-l)">
+					<Switcher
+						as="dl"
+						threshold="44rem"
+						space="var(--space-l)"
+						class="capability-list"
+					>
 						{CAPABILITIES.map((group) => (
-							<dl class="capability-list">
+							<div class="capability-item">
 								<dt>{group.title}</dt>
 								<dd>{group.items}</dd>
-							</dl>
+							</div>
 						))}
 					</Switcher>
 				</Stack>

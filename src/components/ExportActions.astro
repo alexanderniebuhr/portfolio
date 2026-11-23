@@ -59,7 +59,7 @@ const copyOptions = [
 				<Icon name="copy" class="copy-icon-default" />
 				<Icon name="check" class="copy-icon-done" />
 				<span>{triggerLabel}</span>
-				<Icon name="chevron-down" />
+				<Icon name="chevron-down" class="copy-chevron" />
 			</button>
 
 			<div
@@ -303,6 +303,9 @@ const copyOptions = [
 				} catch {
 					window.location.href = pdfUrl;
 				}
+			});
+			frame.addEventListener("error", () => {
+				window.location.href = pdfUrl;
 			});
 			frame.src = pdfUrl;
 			document.body.appendChild(frame);

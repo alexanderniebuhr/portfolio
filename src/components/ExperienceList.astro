@@ -1,0 +1,43 @@
+---
+import type { ExperienceEntry } from "../data/profile.ts";
+import Sidebar from "./layout/Sidebar.astro";
+import Stack from "./layout/Stack.astro";
+
+interface Props {
+	entries: readonly ExperienceEntry[];
+	as?: "ul" | "ol";
+}
+
+const { entries, as = "ol" } = Astro.props;
+---
+
+<Stack as={as} listSemantics space="var(--space-l)" class="cv-list">
+	{entries.map((entry) => (
+		<li>
+			<Sidebar sideWidth="15rem" contentMin="62%" space="var(--space-m)">
+				<Stack space="var(--space-2xs)">
+					<p class="meta-mono measure-none">{entry.period}</p>
+					<p class="muted measure-none">{entry.location}</p>
+				</Stack>
+				<Stack space="var(--space-s)">
+					<Stack space="var(--space-2xs)">
+						<h3>
+							{entry.role} ·{" "}
+							{entry.organizationUrl ? (
+								<a href={entry.organizationUrl}>{entry.organization}</a>
+							) : (
+								entry.organization
+							)}
+						</h3>
+						<p class="muted">{entry.summary}</p>
+					</Stack>
+					<ul class="bullet-list">
+						{entry.highlights.map((item) => (
+							<li>{item}</li>
+						))}
+					</ul>
+				</Stack>
+			</Sidebar>
+		</li>
+	))}
+</Stack>
