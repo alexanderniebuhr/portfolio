@@ -60,6 +60,9 @@ jobs:
       - name: Type-check
         run: aubr --no-install check
 
+      - name: Test
+        run: aubr --no-install test
+
       - name: Build
         run: aubr --no-install build
 

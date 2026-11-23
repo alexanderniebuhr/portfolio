@@ -30,6 +30,12 @@ Type-check with TypeScript 7.1 (`.astro` files via `@astrojs/ts-content-mapper`)
 aubr check
 ```
 
+Run unit tests (PDF generation, export builders, response headers)
+
+```shell
+aubr test
+```
+
 Deploy to cloudflare (sign in once with `aube exec -- cf auth login`)
 
 ```zsh
@@ -44,7 +50,7 @@ Domain settings only take effect on a production deploy (`cf deploy`); Preview u
 
 The `workers.dev` URLs are disabled (`workersDev: false`, `previewUrls: false`), so the Worker is only reachable on its custom domains. A Preview gets no URL at all until a production deploy has applied the `preview.alexanderniebuhr.me` domain.
 
-`*.preview.alexanderniebuhr.me` is protected with Cloudflare Access, configured in the Zero Trust dashboard rather than in this repository. Unlike `workers.dev` Preview URLs, custom domain Preview URLs do not get an `X-Robots-Tag: noindex` header automatically.
+`*.preview.alexanderniebuhr.me` is protected with Cloudflare Access, configured in the Zero Trust dashboard rather than in this repository. Unlike `workers.dev` Preview URLs, custom domain Preview URLs do not get an `X-Robots-Tag: noindex` header automatically, so `public/_headers` and `src/worker.ts` add `X-Robots-Tag: noindex, nofollow` for preview hosts.
 
 ## git hooks
 
