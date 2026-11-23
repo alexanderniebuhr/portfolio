@@ -41,6 +41,8 @@ export const SITE = {
 	email: "alexander@craftlions.com",
 	description:
 		"Staff Engineer with 10+ years of experience in web platforms, cloud-native developer tooling, modern CSS, and accessible interfaces. Astro Core Maintainer and founder of craftlions.",
+	summary:
+		"Staff Engineer with 10+ years of experience building scalable backend systems, cloud-native developer infrastructure, modern browser-native web platforms, and accessible user interfaces. Core Maintainer of Astro and founder of craftlions. Collaborated with engineers from Google, Meta, Cloudflare, and Vercel, including early foundational work that later evolved into Cloudflare Software Factory.",
 } as const;
 
 export const IMPRINT = {
@@ -52,30 +54,38 @@ export const IMPRINT = {
 	company: "craftlions UG (haftungsbeschränkt)",
 } as const;
 
+export const LINKS = {
+	github: "https://github.com/alexanderniebuhr",
+	linkedin: "https://www.linkedin.com/in/alexanderniebuhr/",
+	x: "https://x.com/realalexniebuhr",
+	craftlions: "https://craftlions.com",
+	garden: "https://alexanderniebuhr.garden",
+} as const;
+
 export const SOCIAL_LINKS: readonly LinkItem[] = [
 	{
 		label: "GitHub",
-		href: "https://github.com/alexanderniebuhr",
+		href: LINKS.github,
 		description: "Open-source work and repositories",
 	},
 	{
 		label: "LinkedIn",
-		href: "https://www.linkedin.com/in/alexanderniebuhr/",
+		href: LINKS.linkedin,
 		description: "Career history and professional updates",
 	},
 	{
 		label: "X",
-		href: "https://x.com/realalexniebuhr",
+		href: LINKS.x,
 		description: "Short notes on web platforms and tooling",
 	},
 	{
 		label: "craftlions",
-		href: "https://craftlions.com",
+		href: LINKS.craftlions,
 		description: "Technical advisory and software engineering",
 	},
 	{
 		label: "Garden",
-		href: "https://alexanderniebuhr.garden",
+		href: LINKS.garden,
 		description: "Digital garden and technical notes",
 	},
 ] as const;
@@ -142,9 +152,9 @@ export const EXPERIENCE: readonly ExperienceEntry[] = [
 		role: "Senior Software Engineer (DevOps)",
 		organization: "Cense AG",
 		period: "Sep 2023 – Oct 2023",
-		location: "Lübeck, Germany",
+		location: "Remote",
 		summary:
-			"Cloud infrastructure and CI/CD automation for a Glassnode spin-off building scalable crypto compliance and AML tooling.",
+			"Cloud infrastructure and CI/CD automation for a Glassnode spin-off building automated, scalable crypto compliance and AML solutions.",
 		highlights: [
 			"Cut production cloud infrastructure costs by 2× by provisioning and right-sizing Terraform-managed infrastructure.",
 			"Accelerated deployment speed by 50% and raised code quality metrics by 25% by engineering GitLab CI pipelines with automated static code analysis.",
@@ -154,26 +164,68 @@ export const EXPERIENCE: readonly ExperienceEntry[] = [
 		role: "Senior Backend Engineer (Platform)",
 		organization: "Glassnode",
 		period: "Jan 2023 – Aug 2023",
-		location: "Lübeck, Germany",
+		location: "Remote",
 		summary:
 			"Backend performance engineering and persistence-layer scaling for high-throughput on-chain analytics systems.",
 		highlights: [
 			"Reduced latency on hot backend operations from O(n) to O(1) by profiling production bottlenecks and redesigning core data structures.",
 			"Increased supported customer portfolio scale by 50% through database index optimization, schema simplification, and batched persistence patterns.",
-			"Elevated team-wide backend maintainability via architectural reviews, shared engineering standards, and technical mentoring.",
+			"Elevated team-wide backend maintainability via code reviews, engineering guidance, and shared backend best practices across the team.",
+			"Evaluated and introduced technical improvements based on emerging tools and patterns to strengthen platform performance and developer efficiency.",
 		],
 	},
 	{
-		role: "Full-Stack & Platform Engineer",
+		role: "Senior Software Engineer",
 		organization: "Fricke Holding GmbH",
 		period: "Jul 2021 – Dec 2022",
+		location: "Hamburg, Germany (Hybrid)",
+		summary:
+			"End-to-end architecture, global cloud delivery, and Agile team leadership for an international agricultural machinery platform.",
+		highlights: [
+			"Developed and launched a multi-brand agricultural machinery database across 10 countries for 2,500+ clients, generating $300k in annual revenue using PostgreSQL, GraphQL, TypeScript, Web Components, and Svelte.",
+			"Executed end-to-end full-stack delivery and globally distributed cloud deployment on AWS RDS, Cloudflare Workers and Pages, containers, and global load balancers.",
+			"Formalized best practices into templates, authored an internal knowledge base, and trained junior engineers on algorithms and code standards, improving team effectiveness by 50%.",
+			"Led weekly Agile/Scrum sprints for a team of six — identifying and prioritizing blockers, delegating estimated tasks, and triaging backlogs — reducing meeting times by 2 hours.",
+		],
+	},
+	{
+		role: "Developer",
+		organization: "Fricke Holding GmbH",
+		period: "May 2019 – Jul 2021",
+		location: "Hamburg, Germany (Hybrid)",
+		summary:
+			"Cloud-native platform modernization, mobile product features, and engineering quality practices across web and mobile applications.",
+		highlights: [
+			"Led the system transition from Kubernetes to edge computing using Infrastructure as Code with Pulumi and GitHub Actions across AWS, GCP, and Azure, cutting costs by 50% and reducing deployment times from 30 to 5 minutes.",
+			"Researched user requirements with business owners and converted design mockups into interactive prototypes.",
+			"Established code reviews, pair programming, unit test plans, and technical documentation to reduce outages and bugs, improving uptime and lowering support requests.",
+			"Built and deployed a text recognition feature using Swift's and Google's text recognition APIs in iOS and Android apps, reducing average search time for 20,000+ clients by 4×.",
+		],
+	},
+	{
+		role: "Full Stack Developer",
+		organization: "Tales of Taste GmbH",
+		period: "Feb 2018 – Apr 2019",
 		location: "Hamburg, Germany",
 		summary:
-			"End-to-end architecture and global cloud delivery for an international agricultural machinery platform.",
+			"Cross-platform mobile development, eCommerce delivery, deployment standardization, and business intelligence reporting.",
 		highlights: [
-			"Launched a multi-brand agricultural machinery platform across 10 countries for 2,500+ clients, generating $300k in annual revenue using PostgreSQL, GraphQL, TypeScript, Web Components, and Svelte.",
-			"Architected globally distributed cloud deployment on AWS RDS, Cloudflare Workers and Pages, containers, and global load balancers.",
-			"Improved engineering team effectiveness by 50% by standardizing project templates, authoring an internal knowledge base, and mentoring junior engineers on algorithms and code quality.",
+			"Engineered, implemented, and maintained a React Native wine search app supporting iOS and Android.",
+			"Standardized company-wide deployment processes with CI/CD, code reviews, automated testing, and infrastructure monitoring, lowering deployment times by 50%.",
+			"Delivered multiple eCommerce websites using Shopware and WordPress, backed by a PHP and Drupal CRM, over a 12-month roadmap.",
+			"Built an interactive SQL-backed business intelligence reporting function and Metabase KPI dashboards to identify anomalies, trends, and sales opportunities.",
+		],
+	},
+	{
+		role: "Developer (Part-time)",
+		organization: "Tales of Taste GmbH",
+		period: "Apr 2016 – Jan 2018",
+		location: "Hamburg, Germany",
+		summary:
+			"Backend web development and UX/UI collaboration focused on user retention and product concepting.",
+		highlights: [
+			"Co-developed the website backend using PHP and identified critical design components required to improve user retention rates.",
+			"Collaborated with designers to conduct UX/UI analysis and create concept mockups.",
 		],
 	},
 ] as const;

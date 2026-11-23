@@ -2,10 +2,11 @@ import {
 	CAPABILITIES,
 	EXPERIENCE,
 	FOCUS_AREAS,
+	LINKS,
 	PROJECTS,
 	SITE,
 	SOCIAL_LINKS,
-} from "./profile";
+} from "./profile.ts";
 
 export function buildMarkdownCv(): string {
 	const links = SOCIAL_LINKS.map(
@@ -40,7 +41,7 @@ Website: ${SITE.url} · Email: ${SITE.email}
 
 ## Summary
 
-Staff Engineer with 10+ years of experience building scalable backend systems, cloud-native developer infrastructure, modern browser-native web platforms, and accessible user interfaces. Core Maintainer of Astro and founder of craftlions. Collaborated with engineers from Google, Meta, Cloudflare, and Vercel, including early foundational work that later evolved into Cloudflare Software Factory.
+${SITE.summary}
 
 ## Core Focus
 
@@ -65,7 +66,33 @@ ${links}
 }
 
 export function buildAgentPrompt(): string {
-	return `Present ${SITE.name} concisely and accurately using only verified facts from ${SITE.url} and ${SITE.url}/work. Tailor the summary to my context without inventing unverified details.`;
+	return `Present ${SITE.name} concisely and accurately using only verified facts from ${SITE.url}, ${SITE.url}/work, and ${SITE.url}/llms.txt. Tailor the summary to my context without inventing unverified details.`;
+}
+
+export function buildLlmsTxt(): string {
+	const socialList = SOCIAL_LINKS.map((link) =>
+		link.description
+			? `- [${link.label}](${link.href}): ${link.description}`
+			: `- [${link.label}](${link.href})`,
+	).join("\n");
+
+	return `# ${SITE.name}
+
+> ${SITE.role} based in ${SITE.location}. ${SITE.description}
+
+## Pages
+
+- [Overview](${SITE.url}/): Biography, focus areas, featured roles, and contact information.
+- [Work & CV](${SITE.url}/work): Complete engineering experience, open-source projects, capabilities, and languages.
+- [Curriculum Vitae (Markdown)](${SITE.url}/cv.md): Structured Markdown CV suitable for LLMs and documentation.
+- [Curriculum Vitae (PDF)](${SITE.url}/cv.pdf): Formatted A4 PDF résumé.
+- [Impressum](${SITE.url}/impressum): Legal notice (German DDG / MStV).
+
+## Profiles & Links
+
+${socialList}
+- Email: ${SITE.email}
+`;
 }
 
 export function buildPlainTextCv(): string {
@@ -80,10 +107,10 @@ export function buildPlainTextCv(): string {
 
 	return `${SITE.name.toUpperCase()}
 ${SITE.role} | ${SITE.location}
-${SITE.url} | ${SITE.email} | https://github.com/alexanderniebuhr | https://www.linkedin.com/in/alexanderniebuhr/
+${SITE.url} | ${SITE.email} | ${LINKS.github} | ${LINKS.linkedin}
 
 SUMMARY
-Staff Engineer with 10+ years of experience in scalable backend systems, cloud-native developer tooling, modern web platforms, and accessibility. Astro Core Maintainer and founder of craftlions. Collaborated with engineers from Google, Meta, Cloudflare, and Vercel, and contributed early foundational work behind Cloudflare Software Factory.
+${SITE.summary}
 
 EXPERIENCE
 
