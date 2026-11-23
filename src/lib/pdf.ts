@@ -1,4 +1,12 @@
-import { CAPABILITIES, EXPERIENCE, PROJECTS, SITE } from "../data/profile";
+import {
+	CAPABILITIES,
+	EXPERIENCE,
+	type ExperienceEntry,
+	LINKS,
+	PROJECTS,
+	type ProjectItem,
+	SITE,
+} from "../data/profile.ts";
 
 type FontKey = "F1" | "F2";
 
@@ -213,8 +221,8 @@ class CvPdfBuilder {
 		return width;
 	}
 
-	drawSectionHeading(title: string): void {
-		this.ensureSpace(34);
+	drawSectionHeading(title: string, minFollowingHeight = 0): void {
+		this.ensureSpace(34 + minFollowingHeight);
 		this.moveDown(10);
 		this.drawText(
 			title.toUpperCase(),
@@ -282,20 +290,11 @@ class CvPdfBuilder {
 		this.moveDown(15);
 
 		const headerLinks: readonly { label: string; uri: string }[] = [
-			{ label: "alexanderniebuhr.me", uri: SITE.url },
+			{ label: new URL(SITE.url).host, uri: SITE.url },
 			{ label: SITE.email, uri: `mailto:${SITE.email}` },
-			{
-				label: "github.com/alexanderniebuhr",
-				uri: "https://github.com/alexanderniebuhr",
-			},
-			{
-				label: "linkedin.com/in/alexanderniebuhr",
-				uri: "https://www.linkedin.com/in/alexanderniebuhr/",
-			},
-			{
-				label: "x.com/realalexniebuhr",
-				uri: "https://x.com/realalexniebuhr",
-			},
+			{ label: "github.com/alexanderniebuhr", uri: LINKS.github },
+			{ label: "linkedin.com/in/alexanderniebuhr", uri: LINKS.linkedin },
+			{ label: "x.com/realalexniebuhr", uri: LINKS.x },
 		];
 
 		let cursorX = MARGIN_X;
@@ -334,25 +333,49 @@ class CvPdfBuilder {
 		this.moveDown(14);
 	}
 
+	private measureExperienceEntry(entry: ExperienceEntry): {
+		height: number;
+		wrapMeta: boolean;
+		metaText: string;
+		metaWidth: number;
+	} {
+		const rolePrefix = `${entry.role} · `;
+		const titleWidth =
+			measureText(rolePrefix, "F2", 10.5) +
+			measureText(entry.organization, "F2", 10.5);
+		const metaText = `${entry.period}  ·  ${entry.location}`;
+		const metaWidth = measureText(metaText, "F1", 8.5);
+		const wrapMeta = titleWidth + 10 + metaWidth > CONTENT_WIDTH;
+
+		const summaryLines = wrapText(entry.summary, "F1", 9.25, CONTENT_WIDTH);
+		let height = (wrapMeta ? 25 : 13.5) + summaryLines.length * 13 + 2;
+		for (const bullet of entry.highlights) {
+			const bulletLines = wrapText(bullet, "F1", 9.25, CONTENT_WIDTH - 11);
+			height += bulletLines.length * 13;
+		}
+		return { height, wrapMeta, metaText, metaWidth };
+	}
+
+	private measureProjectItem(project: ProjectItem): number {
+		const summaryLines = wrapText(project.summary, "F1", 9, CONTENT_WIDTH);
+		return 12.5 + summaryLines.length * 12.5 + 4;
+	}
+
 	drawExperience(): void {
-		this.drawSectionHeading("Experience");
+		const firstEntry = EXPERIENCE[0];
+		const firstHeight = firstEntry
+			? this.measureExperienceEntry(firstEntry).height
+			: 0;
+		this.drawSectionHeading("Experience", firstHeight);
 
 		for (let idx = 0; idx < EXPERIENCE.length; idx++) {
 			const entry = EXPERIENCE[idx];
 			if (!entry) continue;
 
 			// Keep each experience entry unbroken on a single page
-			const summaryLines = wrapText(entry.summary, "F1", 9.25, CONTENT_WIDTH);
-			let entryHeight = 13.5 + summaryLines.length * 13 + 2;
-			for (const bullet of entry.highlights) {
-				const bulletLines = wrapText(bullet, "F1", 9.25, CONTENT_WIDTH - 11);
-				entryHeight += bulletLines.length * 13;
-			}
-			this.ensureSpace(entryHeight);
-
-			const metaText = `${entry.period}  ·  ${entry.location}`;
-			const metaWidth = measureText(metaText, "F1", 8.5);
-			const metaX = MARGIN_X + CONTENT_WIDTH - metaWidth;
+			const { height, wrapMeta, metaText, metaWidth } =
+				this.measureExperienceEntry(entry);
+			this.ensureSpace(height);
 
 			let cursorX = MARGIN_X;
 			const rolePrefix = `${entry.role} · `;
@@ -380,7 +403,13 @@ class CvPdfBuilder {
 				);
 			}
 
-			this.drawText(metaText, metaX, this.y, "F1", 8.5, COLOR_MUTED);
+			if (wrapMeta) {
+				this.moveDown(11.5);
+				this.drawText(metaText, MARGIN_X, this.y, "F1", 8.5, COLOR_MUTED);
+			} else {
+				const metaX = MARGIN_X + CONTENT_WIDTH - metaWidth;
+				this.drawText(metaText, metaX, this.y, "F1", 8.5, COLOR_MUTED);
+			}
 			this.moveDown(13.5);
 
 			this.drawWrappedParagraph(entry.summary, "F1", 9.25, 13, COLOR_MUTED);
@@ -397,10 +426,14 @@ class CvPdfBuilder {
 	}
 
 	drawProjects(): void {
-		this.drawSectionHeading("Selected Open Source & Projects");
+		const firstProject = PROJECTS[0];
+		const firstHeight = firstProject
+			? this.measureProjectItem(firstProject)
+			: 0;
+		this.drawSectionHeading("Selected Open Source & Projects", firstHeight);
 
 		for (const project of PROJECTS) {
-			this.ensureSpace(32);
+			this.ensureSpace(this.measureProjectItem(project));
 
 			let cursorX = MARGIN_X;
 			cursorX += this.drawLinkText(
@@ -428,9 +461,19 @@ class CvPdfBuilder {
 	}
 
 	drawCapabilities(): void {
-		this.drawSectionHeading("Capabilities & Languages");
-
 		const colWidth = 142;
+		const firstGroup = CAPABILITIES[0];
+		const firstHeight = firstGroup
+			? 13 *
+					Math.max(
+						wrapText(firstGroup.items, "F1", 9.25, CONTENT_WIDTH - colWidth)
+							.length,
+						1,
+					) +
+				4
+			: 0;
+		this.drawSectionHeading("Capabilities & Languages", firstHeight);
+
 		for (const group of CAPABILITIES) {
 			const lines = wrapText(group.items, "F1", 9.25, CONTENT_WIDTH - colWidth);
 
@@ -569,13 +612,7 @@ export function generateCvPdf(): Uint8Array {
 	pdf.drawHeader();
 
 	pdf.drawSectionHeading("Summary");
-	pdf.drawWrappedParagraph(
-		"Staff Engineer with 10+ years of experience building scalable backend systems, cloud-native developer infrastructure, modern browser-native web platforms, and accessible interfaces. Astro Core Maintainer and founder of craftlions. Collaborated with engineers from Google, Meta, Cloudflare, and Vercel, including early foundational work that later evolved into Cloudflare Software Factory.",
-		"F1",
-		9.5,
-		13.5,
-		COLOR_INK,
-	);
+	pdf.drawWrappedParagraph(SITE.summary, "F1", 9.5, 13.5, COLOR_INK);
 	pdf.moveDown(4);
 
 	pdf.drawExperience();
